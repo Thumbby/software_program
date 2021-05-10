@@ -1,4 +1,4 @@
-# cloudmall-vue
+# stone.io
 
 > A Vue.js project
 
