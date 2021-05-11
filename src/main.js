@@ -18,7 +18,7 @@ Vue.use(ElementUI);
 Vue.use(mavonEditor)
 Vue.config.productionTip = false
 
-
+axios.defaults.baseURL='/api'
 
 router.beforeEach((to, from, next) => {
     /* 路由发生变化修改页面title */

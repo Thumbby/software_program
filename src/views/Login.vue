@@ -10,25 +10,25 @@
       <el-row class="title">
         <h2>登录</h2>
       </el-row>
-      <el-form label-width="0">
-        <el-form-item>
+      <el-form label-width="0" :model="loginForm" ref="loginForm" :rules="loginFormRules">
+        <el-form-item prop="username">
           <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="email" placeholder="登录账号">
+          <el-input class="form-input" v-model="loginForm.mail" placeholder="账号邮箱">
           </el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item prop="password">
           <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="password" placeholder="账号密码" show-password>
+          <el-input class="form-input" v-model="loginForm.password" placeholder="账号密码" show-password>
           </el-input>
         </el-form-item>
         
         <el-form-item class="login">
-          <el-button type="primary" class="form-button" v-on:click="login" round id="login">登录</el-button>
+          <el-button type="primary" class="form-button" v-on:click="login('loginForm')" round id="login">登录</el-button>
         </el-form-item>
 
         <el-form-item class="register">
-          <el-button type="info" size="mini" class="form-button" v-on:click="getPassword" round id="forget">忘记密码?</el-button>
+          <el-button type="info" size="mini" class="form-button" round id="forget">忘记密码?</el-button>
           <el-button type="info" size="mini" class="form-button" v-on:click="toRegister" round id="register">注册账号</el-button>
         </el-form-item>
       </el-form>
@@ -42,8 +42,20 @@ export default {
   name: "Login",
   data(){
     return {
-      email:'',
-      password:''
+      loginForm:{
+        mail:'',
+        password:'',
+      },
+      loginFormRules:{
+        mail: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { type:'email' , message: '请输入正确的邮箱', trigger: 'blur' }
+          ],
+        password: [
+          { required: true, message: '请输入登陆密码', trigger: 'blur' },
+          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   mounted() {
@@ -53,26 +65,30 @@ export default {
     document.querySelector('body').removeAttribute('style')
   },
   methods:{
-    login:function () {
-      console.log("请求登录");
-      if( this.email == "" || this.password == "") {
-        alert("请正确输入");
-      }
-
-      console.log("Login Success!");
-      sessionStorage.setItem("isLogin", true);
-      // sessionStorage.setItem("userid", uid);
-      location = '../';
+    login:function(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$axios.post("/login",{
+            "emailOrEtherId": this.loginForm.mail,
+            "password": this.loginForm.password
+          })
+          .then(res=>{
+            if(res.data.code==0){
+              window.alert("login succeed")
+              localStorage.setItem('token',res.data.data.token)
+              location="./user";
+            }
+          })
+        } else {
+          console.log("error username or password!!");
+          return false;
+        }
+      });
     },
 
     toRegister:function() {
       location="./register"
     },
-
-    getPassword:function () {
-
-    }
-
   }
 }
 </script>
@@ -81,8 +97,6 @@ export default {
 
 .page {
   width: 100%;
-  /* height: 100%; */
-  /* background-color: aliceblue; */
 }
 
 .box {

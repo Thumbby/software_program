@@ -1,48 +1,37 @@
 <template>
-    <el-row :gutter="20">
-      <el-col :span="18" :xs="24">
+      <el-col :span="18" :offset="3">
         <el-card class="profile_card">
           <el-tabs v-model="activeTab">
             <el-tab-pane v-if="true" label="基本信息" name="first">
-              <el-form :label-position="labelPosition" label-width="80px">
-                <el-form-item label="姓名">
-                  <el-input v-model="user.name" />
+              <el-form :model="userForm" ref="userForm" label-width="80px">
+                <el-form-item prop="avatar">
+                  <el-avatar class="user_avatar"></el-avatar>
                 </el-form-item>
-                <el-form-item label="英文名">
-                  <el-input v-model="user.englishName" />
+                <el-form-item prop="etherId">
+                  <p class="title">用户ID：{{userForm.etherId}}</p>
                 </el-form-item>
-                <el-form-item label="性别">
-                  <el-select v-model="user.gender" placeholder="请选择性别">
-                    <el-option label="男" value="male" />
-                    <el-option label="女" value="female" />
-                  </el-select>
+                <el-form-item prop="username">
+                  <h2 class="title" v-if="!whetherChange">{{userForm.userName}}</h2>
+                  <el-input class="change_title" size="large" v-model="userForm.userName" placeholder="user.nickName" v-if="whetherChange"/>
                 </el-form-item>
-                <el-form-item label="班级">
-                  <el-cascader
-                    :options="classroomOptions"
-                    clearable
-                    style="width: 100%"
-                  />
+                <el-form-item label="邮箱" prop="mail">
+                  <el-input class="input_form" v-model="userForm.mail" :disabled="true"/>
                 </el-form-item>
-                <el-form-item label="github">
-                  <el-input v-model="user.github">
+                <el-form-item label="github" prop="github">
+                  <el-input class="input_form" v-model="userForm.github" :disabled="!whetherChange">
                     <template slot="prepend">https://github.com/</template>
                   </el-input>
                 </el-form-item>
-                <el-form-item label="个人网站">
-                  <el-input v-model="user.website" placeholder="应以 http:// 或者 https:// 开头" />
-                </el-form-item>
-                <el-form-item label="个人简介">
-                  <mavon-editor v-model="blogContent" />
+                <el-form-item class="changeBtn">
+                  <el-button type="primary" v-on:click="changeInfo" round v-if="!whetherChange">修改</el-button>
+                  <el-button type="info" v-on:click="clearInfo" round v-if="whetherChange">清空</el-button>
+                  <el-button type="primary" v-on:click="confirmChange" round v-if="whetherChange">确认</el-button>
                 </el-form-item>
               </el-form>
             </el-tab-pane>
-
           </el-tabs>
         </el-card>
       </el-col>
-
-    </el-row>
 </template>
 
 <script>
@@ -50,32 +39,33 @@ export default {
   name: "User",
   data(){
     return{
-      userId:1,
-      username:'',
-      email:'',
-
-      labelPosition: '',
-      user: {
-        name: '',
-        englishName: '',
-        gender: '',
+      whetherChange:false,
+      userForm: {
+        etherId:'1',
+        userName: '小石头',
+        avatar:'',
+        mail:'',
         github: '',
-        website: '',
-        about: '',
-        blogContent: ''
       },
-      classroomOptions: [{ 'label': '计算机学院（软件学院）', 'value': 101, 'children': [{ 'label': '计算机科学与技术', 'value': 10101, 'children': null }, { 'label': '网络工程', 'value': 10102, 'children': null }, { 'label': '信息管理与信息系统', 'value': 10103, 'children': null }, { 'label': '电子商务', 'value': 10104, 'children': null }, { 'label': '数据科学与大数据技术', 'value': 10105, 'children': null }, { 'label': '软件工程一班', 'value': 10106, 'children': null }, { 'label': '软件工程二班', 'value': 10107, 'children': null }] }, { 'label': '电子信息工程学院', 'value': 102, 'children': [{ 'label': '电子信息科学与技术', 'value': 10201, 'children': null }, { 'label': '通信工程', 'value': 10202, 'children': null }, { 'label': '自动化', 'value': 10203, 'children': null }, { 'label': '其他', 'value': 10204, 'children': null }] }, { 'label': '数学科学学院', 'value': 103, 'children': [{ 'label': '数学与应用数学', 'value': 10301, 'children': null }, { 'label': '信息与计算科学', 'value': 10302, 'children': null }, { 'label': '统计学', 'value': 10303, 'children': null }, { 'label': '其他', 'value': 10304, 'children': null }] }, { 'label': '经济管理学院', 'value': 104, 'children': [{ 'label': '经济学', 'value': 10401, 'children': null }, { 'label': '金融学', 'value': 10402, 'children': null }, { 'label': '金融工程', 'value': 10403, 'children': null }, { 'label': '管理科学', 'value': 10404, 'children': null }, { 'label': '人力资源管理', 'value': 10405, 'children': null }, { 'label': '市场营销', 'value': 10406, 'children': null }, { 'label': '工商管理', 'value': 10407, 'children': null }, { 'label': '会计学', 'value': 10408, 'children': null }, { 'label': '财务管理', 'value': 10409, 'children': null }, { 'label': '其他', 'value': 10410, 'children': null }] }, { 'label': '文学与新闻传播学院', 'value': 105, 'children': [{ 'label': '新闻学', 'value': 10501, 'children': null }, { 'label': '编辑出版学', 'value': 10503, 'children': null }, { 'label': '播音与主持艺术', 'value': 10503, 'children': null }, { 'label': '其他', 'value': 10504, 'children': null }] }, { 'label': '外国语学院', 'value': 106, 'children': null }, { 'label': '物理学科与技术学院', 'value': 107, 'children': null }, { 'label': '化学化工学院', 'value': 108, 'children': null }, { 'label': '生命科学学院', 'value': 109, 'children': null }, { 'label': '生态与环境学院', 'value': 110, 'children': null }, { 'label': '其他学院', 'value': 111, 'children': null }],
       activeTab: 'first'
-
     }
   },
   created() {
     this.userId=sessionStorage.getItem("userid");
     this.getUserInformation();
-    this.getAcceptProblem();
   },
   methods:{
     getUserInformation:function (){
+    },
+    changeInfo(){
+      this.whetherChange=true;
+    },
+    confirmChange(){
+      this.whetherChange=false;
+      console.log(this.user)
+    },
+    clearInfo(){
+      this.$refs["userForm"].resetFields();
     }
   }
 }
@@ -84,7 +74,27 @@ export default {
 <style scoped>
 
 .profile_card {
-  margin-top: 10px;
-  margin-right: 10px;
+  margin-top: 20px;
+}
+
+.user_avatar{
+  left:50%;
+}
+
+.title{
+  text-align:center;
+}
+
+.input_form{
+  left:15%;
+  width:70%;
+}
+.change_title{
+  left:45%;
+  width:10%;
+}
+
+.changeBtn{
+  text-align:center;
 }
 </style>

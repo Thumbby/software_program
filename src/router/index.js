@@ -26,7 +26,7 @@ const routes = [
         }
     },
     {
-        path: '/',
+        path: '/console',
         name: 'Console',
         component: Console,
         meta: {

@@ -5,40 +5,35 @@
       <el-row class="title">
         <h2>注册</h2>
       </el-row>
-      <el-form label-width="0">
-        <el-form-item>
+      <el-form label-width="0" :model="registerForm" ref="registerForm" :rules="registerFormRules">
+        <el-form-item prop="username">
           <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="username" placeholder="用户名">
+          <el-input class="form-input" v-model="registerForm.username" placeholder="用户名">
           </el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item prop="password">
           <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="password" placeholder="密码" show-password>
+          <el-input class="form-input" v-model="registerForm.password" placeholder="密码" show-password>
           </el-input>
         </el-form-item>
-
-        <el-form-item >
-          <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="confirmPassword" placeholder="确认密码" show-password>
-          </el-input>
-        </el-form-item>
-
-        <el-form-item >
+        
+        <el-form-item prop="mail">
           <i class="el-icon-message"></i>
-          <el-input class="form-input" v-model="email" placeholder="邮箱">
+          <el-input class="form-input verifyCode" v-model="registerForm.mail" placeholder="邮箱">
           </el-input>
+          <el-button type="primary" class="form-button btnCode" v-on:click="sendVertify(registerForm.mail)">发送验证码</el-button>
         </el-form-item>
 
-        <el-form-item >
-          <i class="el-icon-phone"></i>
-          <el-input class="form-input" v-model="phone" placeholder="手机">
+        <el-form-item prop="vCode">
+          <i class="el-icon-s-ticket"></i>
+          <el-input class="form-input" v-model="registerForm.vCode" placeholder="验证码">
           </el-input>
         </el-form-item>
 
         <el-form-item class="register">
-          <el-button type="info" class="form-button" v-on:click="toLogin" round>去登陆</el-button>
-          <el-button type="primary" class="form-button" v-on:click="register" round>注册</el-button>
+          <el-button type="info" v-on:click="toLogin" round>去登陆</el-button>
+          <el-button type="primary" v-on:click="register('registerForm')" round>注册</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -50,11 +45,34 @@ export default {
   name: 'Register',
   data() {
     return {
-      username:'',
-      password:'',
-      confirmPassword:'',
-      email:'',
-      verifyCode:'',
+      registerForm:{
+        username:'',
+        password:'',
+        mail:'',
+        vCode:''
+      },
+      registerFormRules:{
+        username:[
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
+        ],
+        password:[
+          { required:true, message: '请输入密码', trigger: 'blur'},
+          { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
+        ],
+        mail:[
+          { required:true, message: '请输入邮箱', trigger: 'blur'},
+          { type:'email' , message: '请输入正确的邮箱', trigger: 'blur' }
+        ],
+        /*phone:[
+          { required:true, message: '请输入手机号', trigger: 'blur'},
+          { pattern: /^((0\d{2,3}-\d{7,8})|(1[3584]\d{9}))$/, message: '请输入正确的手机号', trigger: 'blur' }
+        ],*/
+        vCode:[
+          { required:true, message: '请输入验证码', trigger: 'blur'},
+          { min: 6, max: 6, message: '验证码错误', trigger: 'blur' }
+        ]
+      }
     }
   },
   mounted() {
@@ -64,19 +82,42 @@ export default {
     document.querySelector('body').removeAttribute('style')
   },
   methods:{
-    getVerifyCode:function() {
-
+    register:function(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.$axios.post("/register",{
+            "email": this.registerForm.mail,
+            "vCode": this.registerForm.vCode,
+            "username": this.registerForm.username,
+            "password": this.registerForm.password
+          })
+          .then(res=>{
+            if(res.data.code==0){
+              window.alert("Register succeed, go to login and start stone.io")
+              location="./login"
+            }
+          })
+        } else {
+          console.log("lack information!!");
+          return false;
+        }
+      });
     },
-
-    register:function() {
-     
-    },
-
     toLogin:function(){
       location="./login";
+    },
+    sendVertify:function(mail){
+      var verify_vCode = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
+      if(verify_vCode.test(mail)){
+        this.$axios.get("/verify?mail="+mail)
+          .then(res=>{
+              console.log(res.data)
+          })  
+      }
+      else{
+        window.alert("error mail")
+      }
     }
-
-
   }
 }
 </script>
@@ -107,16 +148,12 @@ export default {
   width: 55%;
 }
 
-#verifyCode {
-  margin-right: 10%;
-}
-
 .el-icon-user {
   font-size: 25px;
   margin: 0 20px;
 }
 
-.el-icon-s-goods {
+.el-icon-s-ticket {
   font-size: 25px;
   margin: 0 20px;
 }
@@ -127,11 +164,6 @@ export default {
 }
 
 .el-icon-phone{
-  font-size: 25px;
-  margin: 0 20px;
-}
-
-.el-icon-position {
   font-size: 25px;
   margin: 0 20px;
 }
