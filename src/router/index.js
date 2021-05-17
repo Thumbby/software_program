@@ -14,7 +14,8 @@ const routes = [
         name: 'register',
         component: Register,
         meta: {
-            title: '注册'
+            title: '注册',
+            nacy:'true'
         }
     },
     {
@@ -22,7 +23,8 @@ const routes = [
         name: 'login',
         component: Login,
         meta: {
-            title: '登录'
+            title: '登录',
+            nacy:'true'
         }
     },
     {
@@ -31,7 +33,8 @@ const routes = [
         component: Console,
         meta: {
             title: '控制台',
-            name: '控制台'
+            name: '控制台',
+            nacy:'false'
         },
         children:[
             {
@@ -40,7 +43,8 @@ const routes = [
                 component: User,
                 meta: {
                     title: '个人信息',
-                    name:'个人资料'
+                    name:'个人资料',
+                    nacy:'false'
                 }
             },
         ]
