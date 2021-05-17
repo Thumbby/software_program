@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Register from '@/views/Register'
 import Login from "@/views/Login";
-import Console from "@/views/Console"
+import WorkBench from "@/views/WorkBench"
 import User from "@/views/User";
 
 Vue.use(Router)
@@ -26,9 +26,9 @@ const routes = [
         }
     },
     {
-        path: '/console',
-        name: 'Console',
-        component: Console,
+        path: '/workbench',
+        name: 'WorkBench',
+        component: WorkBench,
         meta: {
             title: '控制台',
             name: '控制台'
