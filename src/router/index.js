@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Register from '@/views/Register'
 import Login from "@/views/Login";
+import FindPassword from "@/views/FindPassword"
 import Console from "@/views/Console"
 import User from "@/views/User";
 
@@ -24,6 +25,15 @@ const routes = [
         component: Login,
         meta: {
             title: '登录',
+            nacy:'true'
+        }
+    },
+    {
+        path: '/findPassword',
+        name: 'findPassword',
+        component: FindPassword,
+        meta: {
+            title: '找回密码',
             nacy:'true'
         }
     },
