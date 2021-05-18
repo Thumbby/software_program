@@ -1,9 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Register from '@/views/Register'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Register from '@/views/Register';
 import Login from "@/views/Login";
-import FindPassword from "@/views/FindPassword"
-import Console from "@/views/Console"
+import FindPassword from "@/views/FindPassword";
+import Console from "@/views/Console";
+import Doc from "@/views/Doc";
 import User from "@/views/User";
 
 Vue.use(Router)
@@ -35,6 +36,15 @@ const routes = [
         meta: {
             title: '找回密码',
             nacy:'true'
+        }
+    },
+    {
+        path: '/doc',
+        name: 'doc',
+        component: Doc,
+        meta: {
+            title: '编辑文本',
+            nacy:'false'
         }
     },
     {
