@@ -75,7 +75,7 @@ export default {
           .then(res=>{
             if(res.data.code==0){
               window.alert("login succeed")
-              sessionStorage.setItem('token',res.data.data.token)
+              localStorage.setItem('token',res.data.data.token)
               location="./user";
             }
           })
