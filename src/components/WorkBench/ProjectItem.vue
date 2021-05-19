@@ -1,6 +1,6 @@
 <template>
   <el-col span="8">
-    <el-card class="box-card" shadow="hover">
+    <el-card class="box-card" shadow="hover" >
       <template #header>
         <div class="card-header">
           <span>{{ title }}</span>
@@ -44,7 +44,7 @@
           <i class="el-icon-star-off" style="font-size: 30px"></i>
         </el-tooltip>
       </span>
-      <span @click="DialogVisible = true">
+      <span @click="navToDoc">
         <el-tooltip class="item" effect="dark" content="编辑" placement="top">
           <i class="el-icon-edit-outline" style="font-size: 30px"></i>
         </el-tooltip>
@@ -57,7 +57,7 @@
         ></i>
       </el-tooltip>
     </el-card>
-    <el-dialog
+    <!-- <el-dialog
       title="编辑项目"
       :visible.sync="DialogVisible"
       width="30%"
@@ -84,7 +84,7 @@
           <el-button type="primary" @click="submitForm()">修改</el-button>
         </el-form-item>
       </el-form>
-    </el-dialog>
+    </el-dialog> -->
   </el-col>
 </template>
 
@@ -102,7 +102,7 @@ export default {
       projecturl: this.info.projecturl,
       etherId: this.info.etherId,
       star: true,
-      DialogVisible: false,
+      // DialogVisible: false,
       token: token,
     };
   },
@@ -141,31 +141,31 @@ export default {
       this.star = !this.star;
     },
 
-    submitForm() {
-      axios
-        .put(
-          "/v1/project",
-          {
-            oldName: this.oldName,
-            name: this.title,
-            description: this.description,
-            limit: this.limit,
-            repository: this.projecturl,
-          },
-          {
-            headers: { Authorization: "Bearer " + this.token },
-          },
-          {
-            headers: { Authorization: "Bearer " + this.token },
-          }
-        )
-        .then((res) => {
-          if (res.data.code == 0) {
-            window.alert("修改成功");
-            location.reload();
-          }
-        });
-    },
+    // submitForm() {
+    //   axios
+    //     .put(
+    //       "/v1/project",
+    //       {
+    //         oldName: this.oldName,
+    //         name: this.title,
+    //         description: this.description,
+    //         limit: this.limit,
+    //         repository: this.projecturl,
+    //       },
+    //       {
+    //         headers: { Authorization: "Bearer " + this.token },
+    //       },
+    //       {
+    //         headers: { Authorization: "Bearer " + this.token },
+    //       }
+    //     )
+    //     .then((res) => {
+    //       if (res.data.code == 0) {
+    //         window.alert("修改成功");
+    //         location.reload();
+    //       }
+    //     });
+    // },
 
     deletProject() {
       axios
@@ -182,6 +182,10 @@ export default {
           // 请求失败处理
           console.log(error);
         });
+    },
+
+    navToDoc(){
+      location="/doc"
     },
   },
 };

@@ -17,7 +17,7 @@ const routes = [
         component: Register,
         meta: {
             title: '注册',
-            nacy:'true'
+            nacy: 'true'
         }
     },
     {
@@ -26,7 +26,7 @@ const routes = [
         component: Login,
         meta: {
             title: '登录',
-            nacy:'true'
+            nacy: 'true'
         }
     },
     {
@@ -35,7 +35,7 @@ const routes = [
         component: FindPassword,
         meta: {
             title: '找回密码',
-            nacy:'true'
+            nacy: 'true'
         }
     },
     {
@@ -44,7 +44,7 @@ const routes = [
         component: Doc,
         meta: {
             title: '编辑文本',
-            nacy:'false'
+            nacy: 'false'
         }
     },
     {
@@ -52,10 +52,11 @@ const routes = [
         name: 'WorkBench',
         component: WorkBench,
         meta: {
-            title: '控制台',
-            name: '控制台',
-            nacy:'false'
+            title: '工作台',
+            name: '工作台',
+            nacy: 'false'
         },
+
     },
     {
         path: '/user',
@@ -63,8 +64,8 @@ const routes = [
         component: User,
         meta: {
             title: '个人信息',
-            name:'个人资料',
-            nacy:'false'
+            name: '个人资料',
+            nacy: 'false'
         }
     },
 

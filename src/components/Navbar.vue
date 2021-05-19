@@ -14,7 +14,7 @@
         </span>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item @click.native="showProfile"><a >个人资料</a></el-dropdown-item>
-          <el-dropdown-item @click.native="logout"><a >工作台</a></el-dropdown-item>
+          <el-dropdown-item @click.native="workBench"><a >工作台</a></el-dropdown-item>
           <el-dropdown-item @click.native="logout"><a >登出</a></el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -48,6 +48,9 @@ export default {
       sessionStorage.setItem("isLogin", false);
       sessionStorage.removeItem("userid" );
       location="/login"
+    },
+    workBench:function(){
+      location="/workbench"
     },
   }
 }
