@@ -4,13 +4,62 @@
       <!-- 导航栏 -->
       <Navbar />
       <div class="project-container">
-        <Search-bar/>
-        <el-row gutter="6"> 
-          <Project-item />
-          <Project-item />
-          <Project-item />
-          <Project-item />
+        <Search-bar />
+        <span @click="DialogVisible = true">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="新建项目"
+            placement="top"
+          >
+            <el-button
+              icon="el-icon-circle-plus-outline"
+              type="primary"
+              class="add-button"
+            />
+          </el-tooltip>
+        </span>
+        <el-row gutter="6">
+          <Project-item
+            v-for="project in projects"
+            :key="project.name"
+            v-bind:info="project"
+          />
         </el-row>
+        <el-dialog
+          title="新建项目"
+          :visible.sync="DialogVisible"
+          width="30%"
+          center
+        >
+          <el-form
+            :model="ruleForm"
+            ref="ruleForm"
+            label-width="100px"
+            class="demo-ruleForm"
+          >
+            <el-form-item label="项目名称">
+              <el-input v-model="title"></el-input>
+            </el-form-item>
+            <el-form-item label="项目描述">
+              <el-input v-model="description"></el-input>
+            </el-form-item>
+            <el-form-item label="项目类别">
+              <span>
+                <el-radio v-model="limit" label="public">公开</el-radio>
+                <el-radio v-model="limit" label="private">私密</el-radio>
+              </span>
+            </el-form-item>
+            <el-form-item label="项目仓库">
+              <el-input v-model="projecturl"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitForm('ruleForm')"
+                >立即创建</el-button
+              >
+            </el-form-item>
+          </el-form>
+        </el-dialog>
       </div>
     </el-main>
   </el-container>
@@ -19,9 +68,12 @@
 <script>
 import Navbar from "@/components/Navbar";
 import ProjectItem from "@/components/WorkBench/ProjectItem";
-import SearchBar from '../components/WorkBench/SearchBar.vue';
+import SearchBar from "../components/WorkBench/SearchBar.vue";
+import axios from "axios";
+import eventBus from "@/eventBus.js";
 export default {
   name: "Console",
+  props: ["data"],
   computed: {
     routeName() {
       const route = this.$route;
@@ -36,8 +88,19 @@ export default {
   },
   data() {
     return {
-      // 左侧菜单
-      menuList: [],
+      DialogVisible: false,
+      limit: "public",
+      title: "",
+      description: "",
+      projects: null,
+      token: null,
+      projecturl: "",
+      ruleForm: {
+        title: "",
+        description: "",
+        limit: "public",
+        projecturl: "",
+      },
     };
   },
 
@@ -47,6 +110,55 @@ export default {
       sessionStorage.removeItem("userid");
       location = "/login";
     },
+    submitForm() {
+      axios
+        .post(
+          "/v1/project",
+          {
+            name: this.title,
+            description: this.description,
+            limit: this.limit,
+            repository: this.projecturl,
+          },
+          {
+            headers: { Authorization: "Bearer " + this.token },
+          }
+        )
+        .then((res) => {
+          if(res.data.code==0){
+              window.alert("创建成功")
+              //刷新token
+              this.DialogVisible = false;
+              this.getProjects();
+            }
+            else if(res.data.code==20304)
+            {
+              window.alert("已存在同名项目")
+            }
+        });    
+    },
+
+    getProjects(){
+      axios
+      .get("v1/user/project", {
+        headers: { Authorization: "Bearer " + this.token },
+      })
+      .then((res) => {
+        if(res.data.code==0){
+              this.projects=res.data.data
+            }
+      })
+      .catch(function (error) {
+        // 请求失败处理
+        console.log(error);
+      });
+    }
+  },
+
+  mounted() {
+    this.token = localStorage.getItem("token");
+    this.getProjects();
+    eventBus.$on("info",(data)=>{this.items=data})
   },
 };
 </script>
@@ -70,14 +182,13 @@ export default {
   align-items: center;
 }
 
-.el-aside {
-}
-
-.el-main {
-  /* background-color: azure; */
-}
 .create-box-card {
   width: 400px;
   height: 120px;
+}
+.add-button {
+  font-size: 30px;
+  margin-left: 15px;
+  margin-top: 10px;
 }
 </style>

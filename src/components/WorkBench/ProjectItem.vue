@@ -4,17 +4,21 @@
       <template #header>
         <div class="card-header">
           <span>{{ title }}</span>
-          <span @click="handleProtectClick">
+          <span>
             <i
               class="el-icon-unlock"
               style="font-size: 30px"
-              v-if="!protect"
+              v-if="limit === 'public'"
             ></i>
-            <i class="el-icon-lock" style="font-size: 30px" v-if="protect"></i>
+            <i
+              class="el-icon-lock"
+              style="font-size: 30px"
+              v-if="limit === 'private'"
+            ></i>
           </span>
         </div>
       </template>
-      <div v-for="o in 4" :key="o" class="text">
+      <div class="text">
         {{ description }}
       </div>
       <el-tooltip class="item" effect="dark" content="分享" placement="top">
@@ -46,7 +50,11 @@
         </el-tooltip>
       </span>
       <el-tooltip class="item" effect="dark" content="删除" placement="top">
-        <i class="el-icon-delete-solid" style="font-size: 30px"></i>
+        <i
+          class="el-icon-delete-solid"
+          style="font-size: 30px"
+          @click="deletProject"
+        ></i>
       </el-tooltip>
     </el-card>
     <el-dialog
@@ -56,8 +64,6 @@
       center
     >
       <el-form
-        :model="ruleForm"
-        :rules="rules"
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
@@ -68,11 +74,14 @@
         <el-form-item label="项目描述">
           <el-input v-model="description"></el-input>
         </el-form-item>
+        <el-form-item label="项目类别">
+          <span>
+            <el-radio v-model="limit" label="public">公开</el-radio>
+            <el-radio v-model="limit" label="private">私密</el-radio>
+          </span>
+        </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')"
-            >立即创建</el-button
-          >
-          <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <el-button type="primary" @click="submitForm()">修改</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -80,34 +89,100 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
+  props: ["info"],
   data() {
+    var token = localStorage.getItem("token");
     return {
-      title: "测试项目",
-      description: "test",
-      protect: false,
+      oldName: this.info.name,
+      title: this.info.name,
+      description: this.info.description,
+      limit: this.info.limit,
+      projecturl: this.info.projecturl,
+      etherId: this.info.etherId,
       star: true,
       DialogVisible: false,
+      token: token,
     };
   },
 
   methods: {
-    handleProtectClick() {
-      this.protect = !this.protect;
-    },
     handleStar() {
+      if (this.star) {
+        axios
+          .delete("/v1/bookmark", {
+            params: { etherID: this.etherId, name: this.title },
+            headers: { Authorization: "Bearer " + this.token },
+          })
+          .then((res) => {
+            if (res.data.code == 0) {
+              window.alert("取消收藏成功");
+            }
+          });
+      } else {
+        axios
+          .post(
+            "/v1/bookmark",
+            {
+              etherID: this.etherId,
+              name: this.title,
+            },
+            {
+              headers: { Authorization: "Bearer " + this.token },
+            }
+          )
+          .then((res) => {
+            if (res.data.code == 0) {
+              window.alert("收藏成功");
+            }
+          });
+      }
       this.star = !this.star;
     },
 
-    submitForm(formName) {
-        this.$refs[formName].resetFields();
-        this.DialogVisible = false;
+    submitForm() {
+      axios
+        .put(
+          "/v1/project",
+          {
+            oldName: this.oldName,
+            name: this.title,
+            description: this.description,
+            limit: this.limit,
+            repository: this.projecturl,
+          },
+          {
+            headers: { Authorization: "Bearer " + this.token },
+          },
+          {
+            headers: { Authorization: "Bearer " + this.token },
+          }
+        )
+        .then((res) => {
+          if (res.data.code == 0) {
+            window.alert("修改成功");
+            location.reload();
+          }
+        });
+    },
 
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
-        this.DialogVisible = false;
-      }
+    deletProject() {
+      axios
+        .delete("/v1/project/" + this.title, {
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            window.alert("删除成功");
+            location.reload();
+          }
+        })
+        .catch(function (error) {
+          // 请求失败处理
+          console.log(error);
+        });
+    },
   },
 };
 </script>
