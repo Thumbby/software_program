@@ -19,13 +19,33 @@
             />
           </el-tooltip>
         </span>
-        <el-row gutter="6">
-          <Project-item
-            v-for="project in projects"
-            :key="project.name"
-            v-bind:info="project"
-          />
-        </el-row>
+        <el-tabs v-model="activeName" @tab-click="handleClick" :tab-position="'left'" style="width: 1500px;">
+          <el-tab-pane label="我的项目" name="first"
+            ><el-row gutter="6">
+              <Project-item
+                v-for="project in projects"
+                :key="project.name"
+                v-bind:info="project"
+              /> </el-row
+          ></el-tab-pane>
+          <el-tab-pane label="我的收藏" name="second"
+            ><el-row gutter="6">
+              <Project-item
+                v-for="project in projects"
+                :key="project.name"
+                v-bind:info="project"
+              /> </el-row
+          ></el-tab-pane>
+          <el-tab-pane label="搜索结果" name="third"
+            ><el-row gutter="6">
+              <Project-item
+                v-for="project in projects"
+                :key="project.name"
+                v-bind:info="project"
+              /> </el-row
+          ></el-tab-pane>
+        </el-tabs>
+
         <el-dialog
           title="新建项目"
           :visible.sync="DialogVisible"
@@ -88,6 +108,7 @@ export default {
   },
   data() {
     return {
+      activeName:'first',
       DialogVisible: false,
       limit: "public",
       title: "",
@@ -125,40 +146,67 @@ export default {
           }
         )
         .then((res) => {
-          if(res.data.code==0){
-              window.alert("创建成功")
-              //刷新token
-              this.DialogVisible = false;
-              this.getProjects();
-            }
-            else if(res.data.code==20304)
-            {
-              window.alert("已存在同名项目")
-            }
-        });    
+          if (res.data.code == 0) {
+            window.alert("创建成功");
+            //刷新token
+            this.DialogVisible = false;
+            this.getProjects();
+          } else if (res.data.code == 20304) {
+            window.alert("已存在同名项目");
+          }
+        });
     },
 
-    getProjects(){
+    getProjects() {
       axios
-      .get("v1/user/project", {
-        headers: { Authorization: "Bearer " + this.token },
-      })
-      .then((res) => {
-        if(res.data.code==0){
-              this.projects=res.data.data
-            }
-      })
-      .catch(function (error) {
-        // 请求失败处理
-        console.log(error);
-      });
-    }
+        .get("v1/user/project", {
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.projects = res.data.data;
+          }
+        })
+        .catch(function (error) {
+          // 请求失败处理
+          console.log(error);
+        });
+    },
+    getBookmarks()
+    {
+      axios
+        .get("/v1/bookmark/all", {
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.projects = res.data.data;
+          }
+        })
+        .catch(function (error) {
+          // 请求失败处理
+          console.log(error);
+        });
+    },
+    handleClick() {
+      if(this.activeName=='first')
+      {
+        this.getProjects();
+      }
+      else if(this.activeName=='second')
+      {
+        this.getBookmarks();
+      }
+    },
   },
 
   mounted() {
     this.token = localStorage.getItem("token");
     this.getProjects();
-    eventBus.$on("info",(data)=>{this.items=data})
+    eventBus.$on("info", (data) => {
+      this.projects = data;
+      this.activeName='third';
+    });
   },
 };
 </script>
@@ -189,6 +237,10 @@ export default {
 .add-button {
   font-size: 30px;
   margin-left: 15px;
+  margin-top: 10px;
+}
+.tabs-box{
+  width: 100%;
   margin-top: 10px;
 }
 </style>

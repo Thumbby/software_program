@@ -14,33 +14,31 @@
 </template>
 
 <script>
-// import axios from "axios";
-// import eventBus from "@/eventBus.js";
+import axios from "axios";
+import eventBus from "@/eventBus.js";
 export default {
   data() {
+    var token = localStorage.getItem("token");
     return {
+      input: "",
+      token: token,
     };
   },
   methods: {
     search() {
-    //   axios
-    //     .post("/api/getHotelByAddress", null, {
-    //       params: {
-    //         province: this.provinceName,
-    //         city: this.cityName,
-    //         district: this.blockName,
-    //         hotelName: this.input,
-    //       },
-    //     })
-    //     .then((response) => {
-    //       if (response.status == 200) {
-    //         eventBus.$emit("info", response.data.member);
-    //         console.log(response.data.member)
-    //       }
-    //     })
-    //     .catch((erro) => {
-    //       console.log(erro);
-    //     });
+      axios
+        .get("/v1/project", {
+          params: { search: this.input },
+          headers: { Authorization: "Bearer " + this.token },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            eventBus.$emit("info", res.data.data);
+          }
+        })
+        .catch((erro) => {
+          console.log(erro);
+        });
     },
   },
 };
