@@ -3,37 +3,32 @@
 
     <el-card class="box" shadow="always">
       <el-row class="title">
-        <h2>注册</h2>
+        <h2>找回密码</h2>
       </el-row>
-      <el-form label-width="0" :model="registerForm" ref="registerForm" :rules="registerFormRules">
-        <el-form-item prop="username">
-          <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="registerForm.username" placeholder="用户名">
-          </el-input>
-        </el-form-item>
+      <el-form label-width="0" :model="findPasswordForm" ref="findPasswordForm" :rules="findPasswordFormRules">
 
         <el-form-item prop="password">
           <i class="el-icon-user"></i>
-          <el-input class="form-input" v-model="registerForm.password" placeholder="密码" show-password>
+          <el-input class="form-input" v-model="findPasswordForm.password" placeholder="重设密码" show-password>
           </el-input>
         </el-form-item>
-        
+
         <el-form-item prop="mail">
           <i class="el-icon-message"></i>
-          <el-input class="form-input verifyCode" v-model="registerForm.mail" placeholder="邮箱">
+          <el-input class="form-input verifyCode" v-model="findPasswordForm.mail" placeholder="邮箱">
           </el-input>
-          <el-button type="primary" class="form-button btnCode" v-on:click="sendVertify(registerForm.mail)">发送验证码</el-button>
+          <el-button type="primary" class="form-button btnCode" v-on:click="sendVertify(findPasswordForm.mail)">发送验证码</el-button>
         </el-form-item>
 
         <el-form-item prop="vCode">
           <i class="el-icon-s-ticket"></i>
-          <el-input class="form-input" v-model="registerForm.vCode" placeholder="验证码">
+          <el-input class="form-input" v-model="findPasswordForm.vCode" placeholder="验证码">
           </el-input>
         </el-form-item>
 
-        <el-form-item class="register">
+        <el-form-item class="findPassword">
           <el-button type="info" v-on:click="toLogin" round>去登陆</el-button>
-          <el-button type="primary" v-on:click="register('registerForm')" round>注册</el-button>
+          <el-button type="primary" v-on:click="findPassword('findPasswordForm')" round>找回密码</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -42,20 +37,15 @@
 
 <script>
 export default {
-  name: 'register',
+  name: 'findPassword',
   data() {
     return {
-      registerForm:{
-        username:'',
+      findPasswordForm:{
         password:'',
         mail:'',
         vCode:''
       },
-      registerFormRules:{
-        username:[
-          { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-        ],
+      findPasswordFormRules:{
         password:[
           { required:true, message: '请输入密码', trigger: 'blur'},
           { min: 6, max: 15, message: '长度在 6 到 15 个字符', trigger: 'blur' }
@@ -78,19 +68,21 @@ export default {
     document.querySelector('body').removeAttribute('style')
   },
   methods:{
-    register:function(formName) {
+    findPassword:function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/register",{
-            "email": this.registerForm.mail,
-            "vCode": this.registerForm.vCode,
-            "username": this.registerForm.username,
-            "password": this.registerForm.password
+          this.$axios.post("/reset",{
+            "email": this.findPasswordForm.mail,
+            "vCode": this.findPasswordForm.vCode,
+            "password": this.findPasswordForm.password
           })
           .then(res=>{
             if(res.data.code==0){
-              window.alert("Register succeed, go to login and start stone.io")
-              location="./login"
+              window.alert("Password reset succeed!")
+              //location="./login"
+            }
+            else{
+              window.alert("Password reset failed!")
             }
           })
         }
@@ -158,7 +150,7 @@ export default {
   padding: 11px;
 }
 
-.register {
+.findPassword {
   text-align: center;
 }
 </style>

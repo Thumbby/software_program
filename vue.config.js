@@ -1,5 +1,9 @@
 module.exports = {
+    publicPath: '/',
+    outputDir: 'dist',
+    assetsDir: 'static',
     devServer: {
+        host:'localhost',
         proxy: {
             '/api': {
                 target: "http://ericwvi.site:8765",

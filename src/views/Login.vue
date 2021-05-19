@@ -28,7 +28,7 @@
         </el-form-item>
 
         <el-form-item class="register">
-          <el-button type="info" size="mini" class="form-button" round id="forget">忘记密码?</el-button>
+          <el-button type="info" size="mini" class="form-button" v-on:click="findPassword" round id="forget">忘记密码?</el-button>
           <el-button type="info" size="mini" class="form-button" v-on:click="toRegister" round id="register">注册账号</el-button>
         </el-form-item>
       </el-form>
@@ -79,16 +79,15 @@ export default {
               location="./user";
             }
           })
-        } else {
-          console.log("error username or password!!");
-          return false;
         }
       });
     },
-
     toRegister:function() {
       location="./register"
     },
+    findPassword:function(){
+      location="./findPassword"
+    }
   }
 }
 </script>
