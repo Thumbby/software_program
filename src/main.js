@@ -21,8 +21,6 @@ Vue.use(mavonEditor);
 Vue.use(VueQuillEditor);
 Vue.config.productionTip = false
 
-axios.defaults.baseURL='/api'
-
 router.beforeEach((to, from, next) => {
   var token = localStorage.getItem('token')//存储token
   console.log(to.meta.title)

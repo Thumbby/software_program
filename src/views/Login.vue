@@ -68,7 +68,7 @@ export default {
     login:function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/login",{
+          this.$axios.post("/api/login",{
             "emailOrEtherId": this.loginForm.mail,
             "password": this.loginForm.password
           })
@@ -76,7 +76,7 @@ export default {
             if(res.data.code==0){
               window.alert("login succeed")
               localStorage.setItem('token',res.data.data.token)
-              location="./user";
+              location="./workbench";
             }
           })
         }

@@ -1,6 +1,7 @@
 <template>
   <div>
     <Navbar />
+    <ApiTest />
     <el-col :span="18" :offset="3">
       <el-card class="profile_card">
         <el-tabs v-model="activeTab">
@@ -188,10 +189,12 @@
 
 <script>
 import Navbar from "@/components/Navbar";
+import ApiTest from "@/components/WorkBench/ApiTest";
 export default {
   name: "User",
   components: {
     Navbar,
+    ApiTest
   },
   data() {
     return {
@@ -248,7 +251,7 @@ export default {
   created() {
     this.$axios({
       method: "get",
-      url: "/v1/user/info",
+      url: "/api/v1/user/info",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -283,7 +286,7 @@ export default {
         if (valid) {
           this.$axios({
             method: "post",
-            url: "/v1/user/password",
+            url: "/api/v1/user/password",
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
             },
@@ -325,7 +328,7 @@ export default {
       ) {
         this.$axios({
           method: "post",
-          url: "/v1/user/info",
+          url: "/api/v1/user/info",
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -354,7 +357,7 @@ export default {
           this.$axios({
             method: "patch",
             url:
-              "/v1/user/email?email=" +
+              "/api/v1/user/email?email=" +
               this.userMail.mail +
               "&code=" +
               this.userMail.vCode,
@@ -384,7 +387,7 @@ export default {
           setTimeout(() => {
             this.is_vCode_click = true;
           }, 60000);
-          this.$axios.get("/verify?mail=" + mail).then((res) => {
+          this.$axios.get("/api/verify?mail=" + mail).then((res) => {
             console.log(res.data);
           });
         }

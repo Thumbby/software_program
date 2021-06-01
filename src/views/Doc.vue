@@ -97,10 +97,8 @@
 </template>
 
 <script>
-
 export default{
       name:"Doc",
-
       created(){
       },
       data:function(){
