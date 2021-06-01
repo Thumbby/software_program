@@ -6,7 +6,7 @@ import WorkBench from "@/views/WorkBench"
 import FindPassword from "@/views/FindPassword";
 import Doc from "@/views/Doc";
 import User from "@/views/User";
-
+import DocView from "@/views/DocView"
 Vue.use(Router)
 
 
@@ -65,6 +65,16 @@ const routes = [
         meta: {
             title: '个人信息',
             name: '个人资料',
+            nacy: 'false'
+        }
+    },
+    {
+        path: '/docView',
+        name: 'docView',
+        component: DocView,
+        meta: {
+            title: '文档预览',
+            name: '文档预览',
             nacy: 'false'
         }
     },

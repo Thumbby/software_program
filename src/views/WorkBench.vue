@@ -134,7 +134,7 @@ export default {
     submitForm() {
       axios
         .post(
-          "/v1/project",
+          "/api/v1/project",
           {
             name: this.title,
             description: this.description,
@@ -159,7 +159,7 @@ export default {
 
     getProjects() {
       axios
-        .get("v1/user/project", {
+        .get("/api/v1/user/project", {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
@@ -175,7 +175,7 @@ export default {
     getBookmarks()
     {
       axios
-        .get("/v1/bookmark/all", {
+        .get("/api/v1/bookmark/all", {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {

@@ -1,6 +1,6 @@
 <template>
   <el-col span="8">
-    <el-card class="box-card" shadow="hover" >
+    <el-card class="box-card" shadow="hover" @click.native="navToDoc">
       <template #header>
         <div class="card-header">
           <span>{{ title }}</span>
@@ -19,9 +19,13 @@
         </div>
       </template>
       <div class="text">
-        {{ description }}
+        项目拥有者:{{etherId}}
+        <br/>
+        项目描述:{{ description }}
+        <br/>
+        {{updateTime}}
       </div>
-      <el-tooltip class="item" effect="dark" content="分享" placement="top">
+      <!-- <el-tooltip class="item" effect="dark" content="分享" placement="top">
         <i class="el-icon-share" style="font-size: 30px"></i>
       </el-tooltip>
       <span @click="handleStar">
@@ -55,7 +59,7 @@
           style="font-size: 30px"
           @click="deletProject"
         ></i>
-      </el-tooltip>
+      </el-tooltip> -->
     </el-card>
     <!-- <el-dialog
       title="编辑项目"
@@ -102,6 +106,7 @@ export default {
       projecturl: this.info.projecturl,
       etherId: this.info.etherId,
       star: true,
+      updateTime:this.info.updateTime,
       // DialogVisible: false,
       token: token,
     };
@@ -185,7 +190,19 @@ export default {
     },
 
     navToDoc(){
-      location="/doc"
+      this.$router.push({  
+            path: '/docView',   
+            name: 'docView',  
+            params: {   
+                oldName: this.oldName,   
+                name: this.title,  
+                etherId:this.etherId
+            }  
+            /*query: {  
+                key: 'key',   
+                msgKey: this.msg  
+            }*/  
+        }) 
     },
   },
 };
