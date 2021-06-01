@@ -19,47 +19,12 @@
         </div>
       </template>
       <div class="text">
-        项目拥有者:{{etherId}}
-        <br/>
+        项目拥有者:{{ etherId }}
+        <br />
         项目描述:{{ description }}
-        <br/>
-        {{updateTime}}
+        <br />
+        {{ updateTime }}
       </div>
-      <!-- <el-tooltip class="item" effect="dark" content="分享" placement="top">
-        <i class="el-icon-share" style="font-size: 30px"></i>
-      </el-tooltip>
-      <span @click="handleStar">
-        <el-tooltip
-          class="item"
-          effect="dark"
-          content="取消收藏"
-          placement="top"
-          v-if="star"
-        >
-          <i class="el-icon-star-on" style="font-size: 30px"></i>
-        </el-tooltip>
-        <el-tooltip
-          class="item"
-          effect="dark"
-          content="收藏"
-          placement="top"
-          v-if="!star"
-        >
-          <i class="el-icon-star-off" style="font-size: 30px"></i>
-        </el-tooltip>
-      </span>
-      <span @click="navToDoc">
-        <el-tooltip class="item" effect="dark" content="编辑" placement="top">
-          <i class="el-icon-edit-outline" style="font-size: 30px"></i>
-        </el-tooltip>
-      </span>
-      <el-tooltip class="item" effect="dark" content="删除" placement="top">
-        <i
-          class="el-icon-delete-solid"
-          style="font-size: 30px"
-          @click="deletProject"
-        ></i>
-      </el-tooltip> -->
     </el-card>
     <!-- <el-dialog
       title="编辑项目"
@@ -93,7 +58,7 @@
 </template>
 
 <script>
-import axios from "axios";
+
 export default {
   props: ["info"],
   data() {
@@ -106,103 +71,26 @@ export default {
       projecturl: this.info.projecturl,
       etherId: this.info.etherId,
       star: true,
-      updateTime:this.info.updateTime,
+      updateTime: this.info.updateTime,
       // DialogVisible: false,
       token: token,
     };
   },
 
   methods: {
-    handleStar() {
-      if (this.star) {
-        axios
-          .delete("/v1/bookmark", {
-            params: { etherID: this.etherId, name: this.title },
-            headers: { Authorization: "Bearer " + this.token },
-          })
-          .then((res) => {
-            if (res.data.code == 0) {
-              window.alert("取消收藏成功");
-            }
-          });
-      } else {
-        axios
-          .post(
-            "/v1/bookmark",
-            {
-              etherID: this.etherId,
-              name: this.title,
-            },
-            {
-              headers: { Authorization: "Bearer " + this.token },
-            }
-          )
-          .then((res) => {
-            if (res.data.code == 0) {
-              window.alert("收藏成功");
-            }
-          });
-      }
-      this.star = !this.star;
-    },
-
-    // submitForm() {
-    //   axios
-    //     .put(
-    //       "/v1/project",
-    //       {
-    //         oldName: this.oldName,
-    //         name: this.title,
-    //         description: this.description,
-    //         limit: this.limit,
-    //         repository: this.projecturl,
-    //       },
-    //       {
-    //         headers: { Authorization: "Bearer " + this.token },
-    //       },
-    //       {
-    //         headers: { Authorization: "Bearer " + this.token },
-    //       }
-    //     )
-    //     .then((res) => {
-    //       if (res.data.code == 0) {
-    //         window.alert("修改成功");
-    //         location.reload();
-    //       }
-    //     });
-    // },
-
-    deletProject() {
-      axios
-        .delete("/v1/project/" + this.title, {
-          headers: { Authorization: "Bearer " + this.token },
-        })
-        .then((res) => {
-          if (res.data.code == 0) {
-            window.alert("删除成功");
-            location.reload();
-          }
-        })
-        .catch(function (error) {
-          // 请求失败处理
-          console.log(error);
-        });
-    },
-
-    navToDoc(){
-      this.$router.push({  
-            path: '/docView',   
-            name: 'docView',  
-            params: {   
-                oldName: this.oldName,   
-                name: this.title,  
-                etherId:this.etherId
-            }  
-            /*query: {  
-                key: 'key',   
-                msgKey: this.msg  
-            }*/  
-        }) 
+    navToDoc() {
+      this.$router.push({
+        path: "/docView",
+        name: "docView",
+        params: {
+          oldName: this.oldName,
+          name: this.title,
+          etherId: this.etherId,
+          description: this.info.description,
+          limit: this.info.limit,
+          projecturl: this.info.projecturl,
+        },
+      });
     },
   },
 };
