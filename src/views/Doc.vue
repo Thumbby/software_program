@@ -4,8 +4,9 @@
       <h1 class="header">{{ this.title }}</h1>
     </div>
     <el-card shadow="always" class="box">
+      <el-header class="title">{{ this.description }}</el-header>
+      <el-button type="success" v-on:click="toSave">保存</el-button>
       <el-container class="doc-container">
-        <el-header class="title">{{ this.description }}</el-header>
         <el-main>
           <quill-editor
             class="editor"
@@ -14,7 +15,7 @@
           >
           </quill-editor>
         </el-main>
-        <el-button type="success" v-on:click="toSave">保存</el-button>
+        
       </el-container>
     </el-card>
   </div>
@@ -25,7 +26,7 @@ import axios from "axios";
 export default {
   name: "Doc",
   created() {
-    this.title = this.$route.params.name;
+    this.name = this.$route.params.name;
     this.oldName = this.$route.params.oldName;
     this.etherId = this.$route.params.etherId;
     this.description = this.$route.params.description;
@@ -38,7 +39,7 @@ export default {
     var token = localStorage.getItem("token");
     return {
       content: "",
-      etherID: "",
+      etherId: "",
       name: "",
       token: token,
       sequence: 1,
@@ -57,13 +58,14 @@ export default {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
-            name: this.title,
+            name: this.name,
             sequence: this.sequence,
           },
         })
         .then((res) => {
           if (res.data.code == 0) {
             this.content = res.data.data.content;
+            this.title=res.data.data.title;
           }
         })
         .catch(function (error) {
@@ -79,7 +81,7 @@ export default {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
         data: {
-          etherID: this.etherID,
+          etherID: this.etherId,
           name: this.name,
           sequence: this.sequence,
           title: this.title,
@@ -91,7 +93,7 @@ export default {
           name: "docView",
           params: {
             oldName: this.oldName,
-            name: this.title,
+            name: this.name,
             etherId: this.etherId,
             description: this.description,
             limit: this.limit,
@@ -112,6 +114,7 @@ export default {
   width: 70%;
   margin-left: 15%;
   height: auto;
+  text-align: center;
 }
 .doc-container {
   height: 650px;
