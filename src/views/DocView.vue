@@ -72,7 +72,7 @@
           </el-tooltip>
         </span>
 
-        <span @click="deletDoc">
+        <span @click="deleteDoc">
           <el-tooltip
             class="item"
             effect="dark"
@@ -104,7 +104,7 @@
         </el-menu>
       </el-col>
       <el-col :span="18" style="margin-left: 5px">
-        <el-card shadow="always" class="box">
+        <el-card v-if="docVisible" shadow="always" class="box">
           <div class="ql-container ql-snow">
             <h1 style="text-align: center">Title</h1>
             <div class="text">
@@ -121,6 +121,7 @@
             </div>
           </div>
         </el-card>
+        <h2 v-else style="margin-left:570px">无数据</h2>
       </el-col>
     </div>
 
@@ -210,6 +211,7 @@ export default {
       star: true,
       content: "文档空空如也",
       selectindex: -1,
+      docVisible:false,
       dialogVisible: false,
       editDialogVisible: false,
       infoDialogVisible: false,
@@ -241,13 +243,21 @@ export default {
           params: { etherID: this.etherId, name: this.title },
         })
         .then((res) => {
+          console.log(res.data)
           if (res.data.code == 0) {
             this.documentList = res.data.data;
-            console.log(this.documentList);
-            this.listLength = this.documentList.length;
-            if (this.listLength > 0) {
-              this.selectindex = 1;
-              this.getDocContent();
+            if(this.documentList==null){
+              this.listLength=0;
+              this.docVisible=false;
+            }
+            else{
+              this.docVisible=true;
+              this.listLength = this.documentList.length;
+              console.log(this.listLength)
+              if (this.listLength > 0) {
+                this.selectindex = 1;
+                this.getDocContent();
+              }
             }
           }
         })
@@ -359,7 +369,7 @@ export default {
         });
     },
 
-    deletDoc() {
+    deleteDoc() {
       axios
         .delete("api/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
@@ -381,7 +391,7 @@ export default {
         });
     },
 
-    deletProject() {
+    deleteProject() {
       axios
         .delete("api/v1/project/" + this.title, {
           headers: { Authorization: "Bearer " + this.token },

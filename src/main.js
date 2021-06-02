@@ -23,11 +23,10 @@ Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {
   var token = localStorage.getItem('token')//存储token
-  console.log(to.meta.title)
   if (to.meta.title) {
     document.title = to.meta.title;//路由中设置页面标题
     if (token||to.meta.nacy=='true') {//to.meta.nacy=='true'这里面的nacy就是自己在路由中设置的//不参与token验证的页面参数变量这个变量可以自己定义
-          next()
+      next()
     } else {
       if (to.path == '/login') {
         next()
