@@ -1,16 +1,29 @@
 <template>
   <div>
     <Navbar />
-    <div style="margin-top: 5px">
-      <el-col :offset="22" :span="1" style="position: fixed">
-        <span @click="dialogVisible = true">
+    <div class="navbar">
+      <div class="navbar-item-blank-center">
+        <h2 id="main_title">{{ this.title }}</h2>
+      </div>
+      <div style="margin-right: 10px">
+        <span @click="editDialogVisible = true">
           <el-tooltip
             class="item"
             effect="dark"
-            content="新建"
-            placement="left"
+            content="编辑项目"
+            placement="top"
           >
-            <i class="el-icon-circle-plus" style="font-size: 30px"></i>
+            <i class="el-icon-s-tools" style="font-size: 30px"></i>
+          </el-tooltip>
+        </span>
+        <span @click="infoDialogVisible = true">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="项目信息"
+            placement="top"
+          >
+            <i class="el-icon-info" style="font-size: 30px"></i>
           </el-tooltip>
         </span>
         <span @click="handleStar">
@@ -18,7 +31,7 @@
             class="item"
             effect="dark"
             content="取消收藏(出现了bug)"
-            placement="left"
+            placement="top"
             v-if="star"
           >
             <i class="el-icon-star-on" style="font-size: 30px"></i>
@@ -33,23 +46,42 @@
             <i class="el-icon-star-off" style="font-size: 30px"></i>
           </el-tooltip>
         </span>
+      </div>
+    </div>
+    <div style="margin-top: 5px">
+      <el-col :offset="22" :span="1" style="position: fixed">
+        <span @click="dialogVisible = true">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="新建文档"
+            placement="left"
+          >
+            <i class="el-icon-circle-plus" style="font-size: 30px"></i>
+          </el-tooltip>
+        </span>
+
         <span @click="navToDoc" v-if="index != -1">
           <el-tooltip
             class="item"
             effect="dark"
-            content="编辑"
+            content="编辑文档"
             placement="left"
           >
             <i class="el-icon-edit-outline" style="font-size: 30px"></i>
           </el-tooltip>
         </span>
-        <el-tooltip class="item" effect="dark" content="删除" placement="left">
-          <i
-            class="el-icon-delete-solid"
-            style="font-size: 30px"
-            @click="deletProject"
-          ></i>
-        </el-tooltip>
+
+        <span @click="deletDoc">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="删除文档"
+            placement="left"
+          >
+            <i class="el-icon-delete-solid" style="font-size: 30px"></i>
+          </el-tooltip>
+        </span>
       </el-col>
 
       <el-col :span="3">
@@ -73,15 +105,16 @@
       </el-col>
       <el-col :span="18" style="margin-left: 5px">
         <el-card shadow="always" class="box">
-          <el-header class="title">{{ content.title }}</el-header>
-
           <div class="ql-container ql-snow">
+            <h1 style="text-align: center">Title</h1>
             <div class="text">
-              作者:{{ content.author }}
-              <br />
-              创建时间:{{ content.createTime }}
-              <br />
-              最近更新:{{ content.updateTime }}
+              <p>
+                作者:{{ content.author }}
+                <br />
+                创建时间:{{ content.createTime }}
+                <br />
+                最近更新:{{ content.updateTime }}
+              </p>
             </div>
             <div class="ql-editor" style="min-height: 300px">
               <div v-html="content.content"></div>
@@ -90,6 +123,7 @@
         </el-card>
       </el-col>
     </div>
+
     <el-dialog title="新建文档" :visible.sync="dialogVisible">
       <el-form :model="formData">
         <el-form-item label="文档名称" :label-width="formLabelWidth">
@@ -108,7 +142,47 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submitForm">确 定</el-button>
+        <el-button type="primary" @click="creatDoc">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="编辑项目" :visible.sync="editDialogVisible">
+      <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="项目名称">
+          <el-input v-model="title"></el-input>
+        </el-form-item>
+        <el-form-item label="项目描述">
+          <el-input v-model="description"></el-input>
+        </el-form-item>
+        <el-form-item label="项目地址">
+          <el-input v-model="projecturl"></el-input>
+        </el-form-item>
+        <el-form-item label="项目类别">
+          <span>
+            <el-radio v-model="limit" label="public">公开</el-radio>
+            <el-radio v-model="limit" label="private">私密</el-radio>
+          </span>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="danger" @click="deleteProject">删除项目</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="editProject">确 定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog title="项目信息" :visible.sync="infoDialogVisible" center width="30%">
+      <div class="info-text">
+        <span>项目名称:{{ title }}</span>
+        <br />
+        <span>项目拥有者:{{ etherId }}</span>
+        <br />
+        <span>项目描述:{{ description }}</span>
+        <br />
+        <span>项目地址:{{ projecturl }}</span>
+        <br/>
+        <span>项目类别:{{limit}}</span>
       </div>
     </el-dialog>
   </div>
@@ -137,6 +211,8 @@ export default {
       content: "文档空空如也",
       selectindex: -1,
       dialogVisible: false,
+      editDialogVisible: false,
+      infoDialogVisible: false,
       formLabelWidth: "120px",
       formData: {
         etherId: "",
@@ -201,6 +277,7 @@ export default {
           console.log(error);
         });
     },
+
     handleSelect(index) {
       this.selectindex = index;
       this.getDocContent();
@@ -244,16 +321,63 @@ export default {
       }
     },
 
-    submitForm() {
+    editProject() {
+      axios
+        .put(
+          "api/v1/project",
+          {
+            oldName: this.oldName,
+            name: this.title,
+            description: this.description,
+            limit: this.limit,
+            repository: this.projecturl,
+          },
+          {
+            headers: { Authorization: "Bearer " + this.token },
+          }
+        )
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.editDialogVisible = false;
+            window.alert("修改成功");
+            this.getDocumentList();
+          }
+        });
+    },
+
+    creatDoc() {
       axios
         .post("api/v1/document", this.formData, {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
           if (res.data.code == 0) {
+            this.dialogVisible = false;
             window.alert("创建成功");
-            this.getDocumentList;
+            this.getDocumentList();
           }
+        });
+    },
+
+    deletDoc() {
+      axios
+        .delete("api/v1/document", {
+          headers: { Authorization: "Bearer " + this.token },
+          params: {
+            etherID: this.etherId,
+            name: this.title,
+            sequence: this.selectindex,
+          },
+        })
+        .then((res) => {
+          if (res.data.code == 0) {
+            window.alert("删除成功");
+            this.getDocumentList();
+          }
+        })
+        .catch(function (error) {
+          // 请求失败处理
+          console.log(error);
         });
     },
 
@@ -279,6 +403,10 @@ export default {
         path: "/doc",
         name: "doc",
         params: {
+          oldName: this.oldName,
+          description: this.description,
+          limit: this.limit,
+          projecturl: this.projecturl,
           name: this.title,
           etherId: this.etherId,
           sequence: this.selectindex,
@@ -293,5 +421,15 @@ export default {
 .text {
   font-size: 14px;
   margin-bottom: 18px;
+  text-align: right;
+  color: darkgrey;
+  margin-right: 10px;
+}
+.info-text {
+  font-size: 14px;
+  margin-bottom: 18px;
+  text-align: left;
+  margin-left: 10px;
 }
 </style>
+<style scoped src="../assets/css/navbar.css">
