@@ -61,7 +61,7 @@
           </el-tooltip>
         </span>
 
-        <span @click="navToDoc" v-if="index != -1">
+        <span @click="navToDoc" v-if="selectindex != -1">
           <el-tooltip
             class="item"
             effect="dark"
@@ -94,7 +94,6 @@
           <el-menu-item
             v-for="item in documentList"
             :key="item.sequence"
-            :index="item.sequence"
           >
             <span slot="title">{{ item.title }}</span>
           </el-menu-item>
@@ -288,8 +287,8 @@ export default {
         });
     },
 
-    handleSelect(index) {
-      this.selectindex = index;
+    handleSelect(key) {
+      this.selectindex = key;
       this.getDocContent();
     },
 
