@@ -100,13 +100,7 @@ export default{
                 }
             ],
             method:'GET',
-            params:[
-                {
-                    params_name:'params_1',
-                    params_value:'1',
-                    show:true
-                }
-            ],
+            params:[],
             test_result:''
         }
     },
