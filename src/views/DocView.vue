@@ -381,7 +381,7 @@ export default {
         });
     },
 
-    deletProject() {
+    deleteProject() {
       axios
         .delete("api/v1/project/" + this.title, {
           headers: { Authorization: "Bearer " + this.token },
