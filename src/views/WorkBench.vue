@@ -21,7 +21,7 @@
         </span>
         <el-tabs v-model="activeName" @tab-click="handleClick" :tab-position="'left'" style="width: 1500px;">
           <el-tab-pane label="我的项目" name="first"
-            ><el-row gutter="6">
+            ><el-row :gutter="6">
               <Project-item
                 v-for="project in projects"
                 :key="project.name"
@@ -29,7 +29,7 @@
               /> </el-row
           ></el-tab-pane>
           <el-tab-pane label="我的收藏" name="second"
-            ><el-row gutter="6">
+            ><el-row :gutter="6">
               <Project-item
                 v-for="project in projects"
                 :key="project.name"
@@ -37,7 +37,7 @@
               /> </el-row
           ></el-tab-pane>
           <el-tab-pane label="搜索结果" name="third"
-            ><el-row gutter="6">
+            ><el-row :gutter="6">
               <Project-item
                 v-for="project in projects"
                 :key="project.name"

@@ -1,5 +1,5 @@
 <template>
-  <el-col span="8">
+  <el-col :span="8">
     <el-card class="box-card" shadow="hover" @click.native="navToDoc">
       <template #header>
         <div class="card-header">
@@ -26,34 +26,7 @@
         {{ updateTime }}
       </div>
     </el-card>
-    <!-- <el-dialog
-      title="编辑项目"
-      :visible.sync="DialogVisible"
-      width="30%"
-      center
-    >
-      <el-form
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item label="项目名称">
-          <el-input v-model="title"></el-input>
-        </el-form-item>
-        <el-form-item label="项目描述">
-          <el-input v-model="description"></el-input>
-        </el-form-item>
-        <el-form-item label="项目类别">
-          <span>
-            <el-radio v-model="limit" label="public">公开</el-radio>
-            <el-radio v-model="limit" label="private">私密</el-radio>
-          </span>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="submitForm()">修改</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog> -->
+
   </el-col>
 </template>
 
