@@ -83,7 +83,7 @@ export default {
         data: {
           etherID: this.etherId,
           name: this.name,
-          sequence: this.sequence,
+          sequence: Number(this.sequence),
           title: this.title,
           content: this.content,
         },
