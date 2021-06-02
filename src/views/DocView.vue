@@ -47,6 +47,7 @@
           </el-tooltip>
         </span>
       </div>
+      <ApiTest/>
     </div>
     <div style="margin-top: 5px">
       <el-col :offset="22" :span="1" style="position: fixed">
@@ -192,9 +193,10 @@
 <script>
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
+import ApiTest from "../components/WorkBench/ApiTest"
 
 export default {
-  components: { Navbar },
+  components: { Navbar ,ApiTest},
   data() {
     var token = localStorage.getItem("token");
     return {

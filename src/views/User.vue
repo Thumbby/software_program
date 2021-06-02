@@ -1,7 +1,6 @@
 <template>
   <div>
     <Navbar />
-    <ApiTest />
     <el-col :span="18" :offset="3">
       <el-card class="profile_card">
         <el-tabs v-model="activeTab">
@@ -189,12 +188,10 @@
 
 <script>
 import Navbar from "@/components/Navbar";
-import ApiTest from "@/components/WorkBench/ApiTest";
 export default {
   name: "User",
   components: {
     Navbar,
-    ApiTest
   },
   data() {
     return {
