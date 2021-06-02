@@ -86,7 +86,7 @@
 
       <el-col :span="3">
         <el-menu
-          default-active="1"
+          :default-active="selectindex.toString()"
           class="el-menu-vertical-demo"
           style="min-height: 800px"
           @select="handleSelect"
@@ -106,7 +106,7 @@
       <el-col :span="18" style="margin-left: 5px">
         <el-card v-if="docVisible" shadow="always" class="box">
           <div class="ql-container ql-snow">
-            <h1 style="text-align: center">Title</h1>
+            <h1 style="text-align: center">{{content.title}}</h1>
             <div class="text">
               <p>
                 作者:{{ content.author }}
@@ -255,7 +255,7 @@ export default {
               this.listLength = this.documentList.length;
               console.log(this.listLength)
               if (this.listLength > 0) {
-                this.selectindex = 1;
+                this.selectindex = this.documentList[0].sequence;
                 this.getDocContent();
               }
             }
