@@ -5,17 +5,17 @@
         <el-form>
             <el-form-item prop="url">
                 <el-col :span='4'>
-                    <el-input disabled v-model="method"/>
-                </el-col>
-                <el-col :span="12">
-                    <el-select v-model="api_chosen" placeholder="请选择url" :popper-append-to-body="false">
+                    <el-select v-model="method">
                         <el-option
-                        v-for="item in api_options"
-                        :key="item.value"
-                        :value="item.value"
-                        :label="item.label">
+                            v-for="item in method_options"
+                            :key="item.value"
+                            :value="item.value"
+                            :label="item.label">
                         </el-option>
                     </el-select>
+                </el-col>
+                <el-col :span="12">
+                    <el-input v-model="api_chosen" placeholder="请输入url"/>
                 </el-col>
             </el-form-item>
             <el-form-item prop="buttons">
@@ -77,28 +77,30 @@ export default{
     data(){
         return{
             api_chosen:'',
-            api_options:[
+            method_options:[
                 {
-                    value:'1',
-                    label:'api_1',
+                    label:'GET',
+                    value:'get',
                 },
                 {
-                    value:'2',
-                    label:'api_2',
+                    label:'POST',
+                    value:'post',
                 },
                 {
-                    value:'3',
-                    label:'api_3',
+                    label:'PUT',
+                    value:'put',
+                },
+                {
+                    label:'PATCH',
+                    value:'patch'
+                },
+                {
+                    label:'DELETE',
+                    value:'delete'
                 }
             ],
             method:'GET',
-            params:[
-                {
-                    params_name:'params_1',
-                    params_value:'1',
-                    show:true
-                }
-            ],
+            params:[],
             test_result:''
         }
     },
@@ -125,16 +127,14 @@ export default{
             this.params.forEach(function(e){
                 data[e.params_name]=e.params_value
             })
-            console.log(data)
-            console.log(this.api_chosen)
-            /*this.$axios({
+            this.$axios({
                 method:this.method,
                 url:this.api_chosen,
                 data
             })
             .then((res)=>{
-                this.test=res.data
-            })*/
+                this.test_result=res.data
+            })
         }
     }
 }
