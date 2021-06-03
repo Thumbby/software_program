@@ -2,8 +2,11 @@
   <div>
     <Navbar />
     <div class="navbar">
-      <div class="navbar-item-blank-center">
-        <h2 id="main_title">{{ this.title }}</h2>
+      <MemberMangementBlock
+        v-bind:info="projectInfo.name"/>
+      <ApiTest/>
+      <div class="navbar-item-blank-center" style="text-align:center; margin-left:12%">
+        <h2 id="main_title">{{ projectInfo.name }}</h2>
       </div>
       <div style="margin-right: 10px">
         <span @click="editDialogVisible = true">
@@ -26,13 +29,32 @@
             <i class="el-icon-info" style="font-size: 30px"></i>
           </el-tooltip>
         </span>
+        <span @click="handleState">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="设置项目为已完成"
+            placement="top"
+            v-if="judegState(projectInfo.state)">
+            <i class="el-icon-check" style="font-size: 30px"></i>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="设置项目为进行中"
+            placement="top"
+            v-if="!judegState(projectInfo.state)">
+            <i class="el-icon-close" style="font-size: 30px"></i>
+          </el-tooltip>
+        </span>
+
         <span @click="handleStar">
           <el-tooltip
             class="item"
             effect="dark"
             content="取消收藏(出现了bug)"
             placement="top"
-            v-if="star"
+            v-if="projectInfo.star"
           >
             <i class="el-icon-star-on" style="font-size: 30px"></i>
           </el-tooltip>
@@ -40,14 +62,13 @@
             class="item"
             effect="dark"
             content="收藏(出现了bug)"
-            placement="left"
-            v-if="!star"
+            placement="top"
+            v-if="!projectInfo.star"
           >
             <i class="el-icon-star-off" style="font-size: 30px"></i>
           </el-tooltip>
         </span>
       </div>
-      <ApiTest/>
     </div>
     <div style="margin-top: 5px">
       <el-col :offset="22" :span="1" style="position: fixed">
@@ -93,13 +114,13 @@
           @select="handleSelect"
         >
           <el-menu-item
-            v-for="item in documentList"
+            v-for="item in projectInfo.documentList"
             :key="item.sequence"
             :index="item.sequence.toString()"
           >
             <span slot="title">{{ item.title }}</span>
           </el-menu-item>
-          <el-menu-item v-if="listLength <= 0" :disabled="true"
+          <el-menu-item v-if="projectInfo.listLength <= 0" :disabled="true"
             >暂无数据</el-menu-item
           >
         </el-menu>
@@ -107,22 +128,22 @@
       <el-col :span="18" style="margin-left: 5px">
         <el-card v-if="docVisible" shadow="always" class="box">
           <div class="ql-container ql-snow">
-            <h1 style="text-align: center">{{content.title}}</h1>
+            <h1 style="text-align: center">{{currentContent.title}}</h1>
             <div class="text">
               <p>
-                作者:{{ content.author }}
+                作者:{{ currentContent.author }}
                 <br />
-                创建时间:{{ content.createTime }}
+                创建时间:{{ currentContent.createTime }}
                 <br />
-                最近更新:{{ content.updateTime }}
+                最近更新:{{ currentContent.updateTime }}
               </p>
             </div>
             <div class="ql-editor" style="min-height: 300px">
-              <div v-html="content.content"></div>
+              <div v-html="currentContent.content"></div>
             </div>
           </div>
         </el-card>
-        <h2 v-else style="margin-left:570px">无数据</h2>
+        <h2 v-else style="margin-left:570px">暂无数据</h2>
       </el-col>
     </div>
 
@@ -151,18 +172,18 @@
     <el-dialog title="编辑项目" :visible.sync="editDialogVisible">
       <el-form ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-form-item label="项目名称">
-          <el-input v-model="title"></el-input>
+          <el-input v-model="projectInfo.name"></el-input>
         </el-form-item>
         <el-form-item label="项目描述">
-          <el-input v-model="description"></el-input>
+          <el-input v-model="projectInfo.description"></el-input>
         </el-form-item>
         <el-form-item label="项目地址">
-          <el-input v-model="projecturl"></el-input>
+          <el-input v-model="projectInfo.repository"></el-input>
         </el-form-item>
         <el-form-item label="项目类别">
           <span>
-            <el-radio v-model="limit" label="public">公开</el-radio>
-            <el-radio v-model="limit" label="private">私密</el-radio>
+            <el-radio v-model="projectInfo.limit" label="public">公开</el-radio>
+            <el-radio v-model="projectInfo.limit" label="private">私密</el-radio>
           </span>
         </el-form-item>
         <el-form-item>
@@ -176,15 +197,15 @@
     </el-dialog>
     <el-dialog title="项目信息" :visible.sync="infoDialogVisible" center width="30%">
       <div class="info-text">
-        <span>项目名称:{{ title }}</span>
+        <span>项目名称:{{ projectInfo.name }}</span>
         <br />
         <span>项目拥有者:{{ etherId }}</span>
         <br />
-        <span>项目描述:{{ description }}</span>
+        <span>项目描述:{{ projectInfo.description }}</span>
         <br />
-        <span>项目地址:{{ projecturl }}</span>
+        <span>项目地址:{{ projectInfo.repository }}</span>
         <br/>
-        <span>项目类别:{{limit}}</span>
+        <span>项目类别:{{projectInfo.limit}}</span>
       </div>
     </el-dialog>
   </div>
@@ -194,24 +215,28 @@
 import axios from "axios";
 import Navbar from "../components/Navbar.vue";
 import ApiTest from "../components/WorkBench/ApiTest"
+import MemberMangementBlock from "../components/WorkBench/MemberManage"
 
 export default {
-  components: { Navbar ,ApiTest},
+  components: { Navbar ,ApiTest, MemberMangementBlock},
   data() {
     var token = localStorage.getItem("token");
     return {
-      oldName: "",
-      title: "",
-      description: "",
-      limit: "",
-      projecturl: "",
       etherId: "",
-      updateTime: "",
       token: token,
-      documentList: [],
-      listLength: 0,
-      star: true,
-      content: "文档空空如也",
+      projectInfo:{
+        oldName: "",
+        name: "",
+        description: "",
+        limit: "",
+        repository: "",
+        updateTime: "",
+        documentList: [],
+        listLength: 0,
+        star: true,
+        state:""
+      },
+      currentContent: null,
       selectindex: -1,
       docVisible:false,
       dialogVisible: false,
@@ -224,17 +249,38 @@ export default {
         title: "newDoc",
         content: "文档空空如也",
       },
+      toDocParams:null,
     };
   },
-  mounted: function () {
-    this.title = this.$route.params.name;
-    this.oldName = this.$route.params.oldName;
-    this.etherId = this.$route.params.etherId;
-    this.description = this.$route.params.description;
-    this.limit = this.$route.params.limit;
-    this.projecturl = this.$route.params.projecturl;
-    this.formData.etherId = this.etherId;
-    this.formData.name = this.title;
+  created() {
+    if(JSON.stringify(this.$route.params) == "{}"){
+      var localParams=JSON.parse(localStorage.getItem("toDocViewParams"))
+      this.projectInfo.name = localParams.name;
+      this.projectInfo.oldName = localParams.name;
+      this.etherId = localParams.etherId;
+      this.formData.etherId = localParams.etherId;
+      this.formData.name = localParams.name;
+    }
+    else{
+      this.projectInfo.name = this.$route.params.name;
+      this.projectInfo.oldName = this.$route.params.name;
+      this.etherId = this.$route.params.etherId;
+      this.formData.etherId = this.$route.params.etherId;
+      this.formData.name = this.$route.params.name;
+    }
+    this.$axios({
+      method:'get',
+      url:'/api/v1/project/'+this.etherId+'/'+this.projectInfo.name,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    })
+    .then((res)=>{
+      this.projectInfo.description=res.data.data.description
+      this.projectInfo.limit=res.data.data.limit
+      this.projectInfo.repository=res.data.data.repository
+      this.projectInfo.state=res.data.data.state
+    })
     this.getDocumentList();
   },
   methods: {
@@ -242,24 +288,18 @@ export default {
       axios
         .get("api/v1/document/all", {
           headers: { Authorization: "Bearer " + this.token },
-          params: { etherID: this.etherId, name: this.title },
+          params: { etherID: this.etherId, name: this.projectInfo.name },
         })
         .then((res) => {
-          console.log(res.data)
           if (res.data.code == 0) {
-            this.documentList = res.data.data;
-            if(this.documentList==null){
-              this.listLength=0;
-              this.docVisible=false;
+            this.projectInfo.documentList = res.data.data;
+            if(this.projectInfo.documentList==null){
+              this.projectInfo.listLength=0;
             }
             else{
-              this.docVisible=true;
-              this.listLength = this.documentList.length;
-              console.log(this.listLength)
-              if (this.listLength > 0) {
-                this.selectindex = this.documentList[0].sequence;
-                this.getDocContent();
-              }
+              this.projectInfo.listLength = this.projectInfo.documentList.length;
+              this.selectindex = this.projectInfo.documentList[0].sequence;
+              this.getDocContent();
             }
           }
         })
@@ -270,18 +310,18 @@ export default {
     },
 
     getDocContent() {
-      axios
-        .get("api/v1/document", {
+      axios.get("api/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
-            name: this.title,
+            name: this.projectInfo.name,
             sequence: this.selectindex,
           },
         })
         .then((res) => {
           if (res.data.code == 0) {
-            this.content = res.data.data;
+            this.docVisible=true;
+            this.currentContent = res.data.data;
           }
         })
         .catch(function (error) {
@@ -300,17 +340,34 @@ export default {
       console.log(key, keyPath);
     },
 
+    handleState(){
+      axios({
+        method:'patch',
+        url:'/api/v1/project/state',
+        params:{name:this.projectInfo.name},
+        headers: { Authorization: "Bearer " + this.token },
+      })
+      .then((res)=>{
+        if(res.data.code=='0'){
+          this.projectInfo.state=!this.projectInfo.state
+        }
+      })
+    },
+    judegState(state){
+      if(state=="进行中")return true;
+      else return false;
+    },
+
     handleStar() {
-      if (this.star) {
+      if (this.projectInfo.star) {
         axios
           .delete("api/v1/bookmark", {
-            params: { etherID: this.etherId, name: this.title },
+            params: { etherID: this.etherId, name: this.projectInfo.name },
             headers: { Authorization: "Bearer " + this.token },
           })
           .then((res) => {
             if (res.data.code == 0) {
-              this.star = !this.star;
-              console.log(this.star);
+              this.projectInfo.star = !this.projectInfo.star;
             }
           });
       } else {
@@ -319,7 +376,7 @@ export default {
             "api/v1/bookmark",
             {
               etherID: this.etherId,
-              name: this.title,
+              name: this.projectInfo.name,
             },
             {
               headers: { Authorization: "Bearer " + this.token },
@@ -327,8 +384,7 @@ export default {
           )
           .then((res) => {
             if (res.data.code == 0) {
-              this.star = !this.star;
-              console.log(this.star);
+              this.projectInfo.star = !this.projectInfo.star;
             }
           });
       }
@@ -339,11 +395,11 @@ export default {
         .put(
           "api/v1/project",
           {
-            oldName: this.oldName,
-            name: this.title,
-            description: this.description,
-            limit: this.limit,
-            repository: this.projecturl,
+            oldName: this.projectInfo.oldName,
+            name: this.projectInfo.name,
+            description: this.projectInfo.description,
+            limit: this.projectInfo.limit,
+            repository: this.projectInfo.repository,
           },
           {
             headers: { Authorization: "Bearer " + this.token },
@@ -378,7 +434,7 @@ export default {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
-            name: this.title,
+            name: this.projectInfo.name,
             sequence: this.selectindex,
           },
         })
@@ -386,6 +442,7 @@ export default {
           if (res.data.code == 0) {
             window.alert("删除成功");
             this.getDocumentList();
+            this.getDocContent();
           }
         })
         .catch(function (error) {
@@ -396,7 +453,7 @@ export default {
 
     deleteProject() {
       axios
-        .delete("api/v1/project/" + this.title, {
+        .delete("api/v1/project/" + this.projectInfo.name, {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
@@ -412,18 +469,16 @@ export default {
     },
 
     navToDoc() {
+      this.toDocParams={
+        name: this.projectInfo.name,
+        etherId: this.etherId,
+        sequence: this.selectindex,
+      },
+      localStorage.setItem('toDocParams',JSON.stringify(this.toDocParams))
       this.$router.push({
         path: "/doc",
         name: "doc",
-        params: {
-          oldName: this.oldName,
-          description: this.description,
-          limit: this.limit,
-          projecturl: this.projecturl,
-          name: this.title,
-          etherId: this.etherId,
-          sequence: this.selectindex,
-        },
+        params: this.toDocParams,
       });
     },
   },

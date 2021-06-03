@@ -1,11 +1,16 @@
 <template>
   <div class="page">
+    <NavBar/>
     <div class="title-container">
-      <h1 class="header">{{ this.title }}</h1>
+        <el-input v-if="title_change" v-model="title" placeholder="title" style="width:20%"/>
+        <br v-if="title_change"/>
+        <h2 v-if="!title_change">{{title}}</h2>
+        <i class="el-icon-document" v-if="!title_change" @click="handleTitleChange"/>
+        <i class="el-icon-check" v-if="title_change" @click="handleTitleChange"/>
     </div>
     <el-card shadow="always" class="box">
-      <el-header class="title">{{ this.description }}</el-header>
       <el-button type="success" v-on:click="toSave">保存</el-button>
+      <el-button type="info" v-on:click="quit">退出</el-button>
       <el-container class="doc-container">
         <el-main>
           <quill-editor
@@ -23,16 +28,26 @@
 
 <script>
 import axios from "axios";
+import NavBar from "@/components/Navbar"
 export default {
   name: "Doc",
+  components:{
+    NavBar,
+  },
   created() {
-    this.name = this.$route.params.name;
-    this.oldName = this.$route.params.oldName;
-    this.etherId = this.$route.params.etherId;
-    this.description = this.$route.params.description;
-    this.limit = this.$route.params.limit;
-    this.projecturl = this.$route.params.projecturl;
-    this.sequence = this.$route.params.sequence;
+    if(JSON.stringify(this.$route.params)=="{}"){
+      var paramsData=JSON.parse(localStorage.getItem('toDocParams'))
+      this.name = paramsData.name;
+      this.oldName = paramsData.name;
+      this.etherId = paramsData.etherId;
+      this.sequence = paramsData.sequence;
+    }
+    else{
+      this.name = this.$route.params.name;
+      this.oldName = this.$route.params.name;
+      this.etherId = this.$route.params.etherId;
+      this.sequence = this.$route.params.sequence;
+    }
     this.getDocContent();
   },
   data: function () {
@@ -44,6 +59,7 @@ export default {
       token: token,
       sequence: 1,
       title: "",
+      title_change:false,
     };
   },
   methods: {
@@ -53,6 +69,7 @@ export default {
       console.log(this.content);
     },
     getDocContent() {
+      console.log(this.name)
       axios
         .get("api/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
@@ -72,6 +89,23 @@ export default {
           // 请求失败处理
           console.log(error);
         });
+    },
+    handleTitleChange(){
+      this.title_change=!this.title_change;
+    },
+    quit(){
+      this.$router.push({
+        path: "/docView",
+        name: "docView",
+        params: {
+          oldName: this.oldName,
+          name: this.name,
+          etherId: this.etherId,
+          description: this.description,
+          limit: this.limit,
+          projecturl: this.projecturl,
+        },
+      });
     },
     toSave() {
       this.$axios({
@@ -109,6 +143,7 @@ export default {
 <style scoped>
 .page {
   width: 100%;
+  text-align: center;
 }
 .box {
   width: 70%;
@@ -146,6 +181,10 @@ export default {
   margin-bottom: 10px;
 }
 .operations {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+.title-container {
   margin-top: 20px;
   margin-bottom: 20px;
 }

@@ -3,7 +3,7 @@
     <el-card class="box-card" shadow="hover" @click.native="navToDoc">
       <template #header>
         <div class="card-header">
-          <span>{{ title }}</span>
+          <span>{{ name }}</span>
           <span>
             <i
               class="el-icon-unlock"
@@ -23,7 +23,11 @@
         <br />
         项目描述:{{ description }}
         <br />
+        创建时间:{{ createTime}}
+        <br />
         {{ updateTime }}
+        <br />
+        状态:{{ state }}
       </div>
     </el-card>
 
@@ -37,32 +41,28 @@ export default {
   data() {
     var token = localStorage.getItem("token");
     return {
-      oldName: this.info.name,
-      title: this.info.name,
+      token: token,
+      name: this.info.name,
       description: this.info.description,
       limit: this.info.limit,
-      projecturl: this.info.projecturl,
       etherId: this.info.etherId,
-      star: true,
       updateTime: this.info.updateTime,
-      // DialogVisible: false,
-      token: token,
+      createTime: this.info.createTime,
+      state: this.info.state,
+      toDocViewParams:null
     };
   },
-
   methods: {
     navToDoc() {
+      this.toDocViewParams={
+        name:this.name,
+        etherId:this.etherId,
+      }
+      localStorage.setItem("toDocViewParams",JSON.stringify(this.toDocViewParams))
       this.$router.push({
         path: "/docView",
         name: "docView",
-        params: {
-          oldName: this.oldName,
-          name: this.title,
-          etherId: this.etherId,
-          description: this.info.description,
-          limit: this.info.limit,
-          projecturl: this.info.projecturl,
-        },
+        params: this.toDocViewParams,
       });
     },
   },

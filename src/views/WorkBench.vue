@@ -19,6 +19,12 @@
             />
           </el-tooltip>
         </span>
+        <div class="sort_radio" style="text-align:center; margin-top:5%; margin-bottom:5%">
+          <el-radio-group v-model="sort_method" @change="change_sort_method">
+            <el-radio label="create_date">按创建时间排序</el-radio>
+            <el-radio label="update_date">按更改时间排序</el-radio>
+          </el-radio-group>
+        </div>
         <el-tabs v-model="activeName" @tab-click="handleClick" :tab-position="'left'" style="width: 1500px;">
           <el-tab-pane label="我的项目" name="first"
             ><el-row :gutter="6">
@@ -59,19 +65,19 @@
             class="demo-ruleForm"
           >
             <el-form-item label="项目名称">
-              <el-input v-model="title"></el-input>
+              <el-input v-model="submitInfo.name"></el-input>
             </el-form-item>
             <el-form-item label="项目描述">
-              <el-input v-model="description"></el-input>
+              <el-input v-model="submitInfo.description"></el-input>
             </el-form-item>
             <el-form-item label="项目类别">
               <span>
-                <el-radio v-model="limit" label="public">公开</el-radio>
-                <el-radio v-model="limit" label="private">私密</el-radio>
+                <el-radio v-model="submitInfo.limit" label="public">公开</el-radio>
+                <el-radio v-model="submitInfo.limit" label="private">私密</el-radio>
               </span>
             </el-form-item>
             <el-form-item label="项目仓库">
-              <el-input v-model="projecturl"></el-input>
+              <el-input v-model="submitInfo.repository"></el-input>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="submitForm('ruleForm')"
@@ -91,6 +97,33 @@ import ProjectItem from "@/components/WorkBench/ProjectItem";
 import SearchBar from "../components/WorkBench/SearchBar.vue";
 import axios from "axios";
 import eventBus from "@/eventBus.js";
+/*排序算法*/
+var compare_by_create = function(obj1,obj2){
+  var val1=obj1.createUnix;
+  var val2=obj2.createUnix;
+  if(val1<val2){
+    return -1;
+  }
+  else if(val1>val2){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
+var compare_by_update = function(obj1,obj2){
+  var val1=obj1.updateUnix;
+  var val2=obj2.updateUnix;
+  if(val1>val2){
+    return -1;
+  }
+  else if(val1<val2){
+    return 1;
+  }
+  else{
+    return 0;
+  }
+}
 export default {
   name: "Console",
   props: ["data"],
@@ -108,14 +141,17 @@ export default {
   },
   data() {
     return {
+      token: null,
+      projects: null,
+      sort_method:'',
       activeName:'first',
       DialogVisible: false,
-      limit: "public",
-      title: "",
-      description: "",
-      projects: null,
-      token: null,
-      projecturl: "",
+      submitInfo:{
+        name: "",
+        description: "",
+        limit: "public",
+        repository: "",
+      },
       ruleForm: {
         title: "",
         description: "",
@@ -131,15 +167,27 @@ export default {
       sessionStorage.removeItem("userid");
       location = "/login";
     },
+    sort(method){
+      if(method=='update_date'){
+          this.projects.sort(compare_by_update)
+        }
+      else{
+          this.projects.sort(compare_by_create)
+      }
+    },
+    change_sort_method(method){
+      this.sort(method)
+      console.log(this.projects)
+    },
     submitForm() {
       axios
         .post(
           "/api/v1/project",
           {
-            name: this.title,
-            description: this.description,
-            limit: this.limit,
-            repository: this.projecturl,
+            name: this.submitInfo.name,
+            description: this.submitInfo.description,
+            limit: this.submitInfo.limit,
+            repository: this.submitInfo.repository,
           },
           {
             headers: { Authorization: "Bearer " + this.token },
@@ -156,7 +204,6 @@ export default {
           }
         });
     },
-
     getProjects() {
       axios
         .get("/api/v1/user/project", {
@@ -165,6 +212,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.projects = res.data.data;
+            this.sort(this.sort_method);
           }
         })
         .catch(function (error) {
@@ -181,6 +229,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.projects = res.data.data;
+            this.sort(this.sort_method);
           }
         })
         .catch(function (error) {
