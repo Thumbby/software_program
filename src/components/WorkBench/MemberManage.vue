@@ -5,12 +5,12 @@
             <el-form>
                 <el-form-item
                     v-for="item in memberList"
-                    :key="item.name">
+                    :key="item.username">
                     <i v-if="item.role=='owner'" class="el-icon-s-custom"/>
                     <i v-if="item.role=='collaborator'" class="el-icon-user-solid"/>
                     <i v-if="item.role=='viewer'" class="el-icon-user"/>
-                    {{item.name}}
-                    <el-button v-if="!item.role=='owner'" @click="deleteMember(item)" type="warning" size="mini" icon="el-icon-remove"/>
+                    {{item.username}}
+                    <el-button v-if="item.role!='owner'" @click="deleteMember(item)" type="warning" size="mini" icon="el-icon-remove"/>
                 </el-form-item>
                 <el-form-item>
                     <el-popover>
@@ -21,9 +21,6 @@
                         :model="addMemberForm" 
                         ref="addMemberForm" 
                         :rules="addMemberFormRules">
-                        <el-form-item prop="name" label="用户名">
-                            <el-input v-model="addMemberForm.name" placeholder="请输入用户名"/>
-                        </el-form-item>
                         <el-form-item prop="email" label="用户邮箱">
                             <el-input v-model="addMemberForm.email" placeholder="请输入用户邮箱"/>
                         </el-form-item>
@@ -53,16 +50,12 @@ export default{
         return{
             possible_role:['collaborator','viewer'],
             addMemberForm:{
-                name:"",
+                name:this.info,
                 email:"",
                 role:""
             },
             memberList:null,
             addMemberFormRules:{
-                name:[
-                    { required: true, message: '请输入用户名', trigger: 'blur' },
-                    { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-                ],
                 email:[
                     { required:true, message: '请输入邮箱', trigger: 'blur'},
                     { type:'email' , message: '请输入正确的邮箱', trigger: 'blur' }
@@ -94,7 +87,10 @@ export default{
             this.$axios({
                 method:'post',
                 url:'/api/v1/collaborator',
-                data:this.addMemberForm
+                data:this.addMemberForm,
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                },
             })
             .then((res)=>{
                 if(res.data.code=='0'){
