@@ -3,7 +3,8 @@
     <Navbar />
     <div class="navbar">
       <MemberMangementBlock
-        v-bind:info="projectInfo.name"/>
+        v-bind:info="projectInfo.name"
+        style="margin-left:2%"/>
       <ApiTest/>
       <div class="navbar-item-blank-center" style="text-align:center; margin-left:12%">
         <h2 id="main_title">{{ projectInfo.name }}</h2>
@@ -126,8 +127,7 @@
         </el-menu>
       </el-col>
       <el-col :span="18" style="margin-left: 5px">
-        <el-card v-if="docVisible" shadow="always" class="box">
-          <div class="ql-container ql-snow">
+        <el-card v-if="docVisible" shadow="always" class="box" style="min-height:800px;">
             <h1 style="text-align: center">{{currentContent.title}}</h1>
             <div class="text">
               <p>
@@ -138,10 +138,7 @@
                 最近更新:{{ currentContent.updateTime }}
               </p>
             </div>
-            <div class="ql-editor" style="min-height: 300px">
               <div v-html="currentContent.content"></div>
-            </div>
-          </div>
         </el-card>
         <h2 v-else style="margin-left:570px">暂无数据</h2>
       </el-col>
