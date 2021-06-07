@@ -48,7 +48,7 @@ const routes = [
         }
     },
     {
-        path: '/workbench',
+        path: '/workBench',
         name: 'WorkBench',
         component: WorkBench,
         meta: {
@@ -82,7 +82,7 @@ const routes = [
 ]
 
 const router = new Router({
-    mode: 'history',
+    mode: 'hash',
     base: process.env.BASE_URL,
     routes
 })

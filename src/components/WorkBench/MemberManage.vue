@@ -73,7 +73,7 @@ export default{
         getMember(){
             this.$axios({
                 method:'get',
-                url:'/api/v1/collaborator/'+this.info,
+                url:'/v1/collaborator/'+this.info,
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
                 },
@@ -86,7 +86,7 @@ export default{
         addMember(){
             this.$axios({
                 method:'post',
-                url:'/api/v1/collaborator',
+                url:'/v1/collaborator',
                 data:this.addMemberForm,
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("token"),
@@ -104,7 +104,7 @@ export default{
         deleteMember(item){
             this.$axios({
                 method:"delete",
-                url:'/api/v1/collaborator/'+this.info,
+                url:'/v1/collaborator/'+this.info,
                 params: { email: item.email},
                 headers: {
                 Authorization: "Bearer " + localStorage.getItem("token"),

@@ -27,7 +27,7 @@ export default {
   methods: {
     search() {
       axios
-        .get("api/v1/project", {
+        .get("/v1/project", {
           params: { search: this.input },
           headers: { Authorization: "Bearer " + this.token },
         })

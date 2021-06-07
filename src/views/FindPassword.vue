@@ -71,7 +71,7 @@ export default {
     findPassword:function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/api/reset",{
+          this.$axios.post("/reset",{
             "email": this.findPasswordForm.mail,
             "vCode": this.findPasswordForm.vCode,
             "password": this.findPasswordForm.password
@@ -79,7 +79,6 @@ export default {
           .then(res=>{
             if(res.data.code==0){
               window.alert("Password reset succeed!")
-              //location="./login"
             }
             else{
               window.alert("Password reset failed!")
@@ -89,12 +88,12 @@ export default {
       });
     },
     toLogin:function(){
-      location="./login";
+      location = "/#/login";
     },
     sendVertify:function(mail){
       var verify_vCode = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
       if(verify_vCode.test(mail)){
-        this.$axios.get("/api/verify?mail="+mail)
+        this.$axios.get("/verify?mail="+mail)
           .then(res=>{
               console.log(res.data)
           })  

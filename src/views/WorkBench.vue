@@ -165,7 +165,10 @@ export default {
     logout: function () {
       sessionStorage.setItem("isLogin", false);
       sessionStorage.removeItem("userid");
-      location = "/login";
+      this.$router.push({
+        path:"/login",
+        name:"login"
+      })
     },
     sort(method){
       if(method=='update_date'){
@@ -182,7 +185,7 @@ export default {
     submitForm() {
       axios
         .post(
-          "/api/v1/project",
+          "/v1/project",
           {
             name: this.submitInfo.name,
             description: this.submitInfo.description,
@@ -206,7 +209,7 @@ export default {
     },
     getProjects() {
       axios
-        .get("/api/v1/user/project", {
+        .get("/v1/user/project", {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
@@ -223,7 +226,7 @@ export default {
     getBookmarks()
     {
       axios
-        .get("/api/v1/bookmark/all", {
+        .get("/v1/bookmark/all", {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {

@@ -40,17 +40,17 @@ export default {
   methods:{
     //切换至个人主页逻辑
     showProfile:function(){
-      location="/user"
+      location = "/#/user";
     },
-    //切换至个人工作台逻辑
     // 退出登录逻辑
     logout:function(){
       sessionStorage.setItem("isLogin", false);
       sessionStorage.removeItem("userid" );
-      location="/login"
+        location = "/#/login";
     },
+    //切换至个人工作台逻辑
     workBench:function(){
-      location="/workbench"
+      location = "/#/workBench";
     },
   }
 }

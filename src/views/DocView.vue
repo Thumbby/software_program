@@ -267,7 +267,7 @@ export default {
     }
     this.$axios({
       method:'get',
-      url:'/api/v1/project/'+this.etherId+'/'+this.projectInfo.name,
+      url:'/v1/project/'+this.etherId+'/'+this.projectInfo.name,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -283,7 +283,7 @@ export default {
   methods: {
     getDocumentList() {
       axios
-        .get("api/v1/document/all", {
+        .get("/v1/document/all", {
           headers: { Authorization: "Bearer " + this.token },
           params: { etherID: this.etherId, name: this.projectInfo.name },
         })
@@ -307,7 +307,7 @@ export default {
     },
 
     getDocContent() {
-      axios.get("api/v1/document", {
+      axios.get("/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
@@ -340,7 +340,7 @@ export default {
     handleState(){
       axios({
         method:'patch',
-        url:'/api/v1/project/state',
+        url:'/v1/project/state',
         params:{name:this.projectInfo.name},
         headers: { Authorization: "Bearer " + this.token },
       })
@@ -358,7 +358,7 @@ export default {
     handleStar() {
       if (this.projectInfo.star) {
         axios
-          .delete("api/v1/bookmark", {
+          .delete("/v1/bookmark", {
             params: { etherID: this.etherId, name: this.projectInfo.name },
             headers: { Authorization: "Bearer " + this.token },
           })
@@ -370,7 +370,7 @@ export default {
       } else {
         axios
           .post(
-            "api/v1/bookmark",
+            "/v1/bookmark",
             {
               etherID: this.etherId,
               name: this.projectInfo.name,
@@ -390,7 +390,7 @@ export default {
     editProject() {
       axios
         .put(
-          "api/v1/project",
+          "/v1/project",
           {
             oldName: this.projectInfo.oldName,
             name: this.projectInfo.name,
@@ -413,7 +413,7 @@ export default {
 
     creatDoc() {
       axios
-        .post("api/v1/document", this.formData, {
+        .post("/v1/document", this.formData, {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
@@ -427,7 +427,7 @@ export default {
 
     deleteDoc() {
       axios
-        .delete("api/v1/document", {
+        .delete("/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
@@ -440,6 +440,7 @@ export default {
             window.alert("删除成功");
             this.getDocumentList();
             this.getDocContent();
+            this.docVisible=false;
           }
         })
         .catch(function (error) {
@@ -450,13 +451,13 @@ export default {
 
     deleteProject() {
       axios
-        .delete("api/v1/project/" + this.projectInfo.name, {
+        .delete("/v1/project/" + this.projectInfo.name, {
           headers: { Authorization: "Bearer " + this.token },
         })
         .then((res) => {
           if (res.data.code == 0) {
             window.alert("删除成功");
-            location = "/workBench";
+            location = "/#/workBench";
           }
         })
         .catch(function (error) {

@@ -68,7 +68,7 @@ export default {
     login:function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/api/login",{
+          this.$axios.post("/login",{
             "emailOrEtherId": this.loginForm.mail,
             "password": this.loginForm.password
           })
@@ -76,17 +76,17 @@ export default {
             if(res.data.code==0){
               window.alert("login succeed")
               localStorage.setItem('token',res.data.data.token)
-              location="./workbench";
+              location = "/#/workBench";
             }
           })
         }
       });
     },
     toRegister:function() {
-      location="./register"
+      location = "/#/register";
     },
     findPassword:function(){
-      location="./findPassword"
+      location = "/#/findPassword";
     }
   }
 }

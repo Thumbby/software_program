@@ -16,6 +16,7 @@ import './assets/css/global.css'
 
 
 Vue.prototype.$axios = axios
+//axios.defaults.baseURL="/api"
 Vue.use(ElementUI);
 Vue.use(mavonEditor);
 Vue.use(VueQuillEditor);

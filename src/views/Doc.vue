@@ -71,7 +71,7 @@ export default {
     getDocContent() {
       console.log(this.name)
       axios
-        .get("api/v1/document", {
+        .get("/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
           params: {
             etherID: this.etherId,
@@ -110,7 +110,7 @@ export default {
     toSave() {
       this.$axios({
         method: "put",
-        url: "/api/v1/document",
+        url: "/v1/document",
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },

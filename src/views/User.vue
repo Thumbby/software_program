@@ -248,14 +248,17 @@ export default {
   created() {
     this.$axios({
       method: "get",
-      url: "/api/v1/user/info",
+      url: "/v1/user/info",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
     }).then((res) => {
       if (res.data.code == "10005") {
         window.alert("Token Expired");
-        location = "./login";
+        this.$router.push({
+          path:"/login",
+          name:"login"
+        })
       } else {
         if (res.data.token != "") {
           localStorage.setItem("token", res.data.token);
@@ -283,7 +286,7 @@ export default {
         if (valid) {
           this.$axios({
             method: "post",
-            url: "/api/v1/user/password",
+            url: "/v1/user/password",
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
             },
@@ -297,7 +300,10 @@ export default {
             }
           });
           this.user_password_change = false;
-          location = "./login";
+          this.$router.push({
+            path:"/login",
+            name:"login"
+          })
         }
       });
     },
@@ -325,7 +331,7 @@ export default {
       ) {
         this.$axios({
           method: "post",
-          url: "/api/v1/user/info",
+          url: "/v1/user/info",
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
           },
@@ -354,7 +360,7 @@ export default {
           this.$axios({
             method: "patch",
             url:
-              "/api/v1/user/email?email=" +
+              "/v1/user/email?email=" +
               this.userMail.mail +
               "&code=" +
               this.userMail.vCode,
@@ -384,7 +390,7 @@ export default {
           setTimeout(() => {
             this.is_vCode_click = true;
           }, 60000);
-          this.$axios.get("/api/verify?mail=" + mail).then((res) => {
+          this.$axios.get("/verify?mail=" + mail).then((res) => {
             console.log(res.data);
           });
         }

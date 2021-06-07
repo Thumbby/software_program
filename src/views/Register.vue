@@ -81,7 +81,7 @@ export default {
     register:function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$axios.post("/api/register",{
+          this.$axios.post("/register",{
             "email": this.registerForm.mail,
             "vCode": this.registerForm.vCode,
             "username": this.registerForm.username,
@@ -90,19 +90,19 @@ export default {
           .then(res=>{
             if(res.data.code==0){
               window.alert("Register succeed, go to login and start stone.io")
-              location="./login"
+                location = "/#/login";    
             }
           })
         }
       });
     },
     toLogin:function(){
-      location="./login";
+      location = "/#/login";
     },
     sendVertify:function(mail){
       var verify_vCode = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,14}/;
       if(verify_vCode.test(mail)){
-        this.$axios.get("/api/verify?mail="+mail)
+        this.$axios.get("/verify?mail="+mail)
           .then(res=>{
               console.log(res.data)
           })  
