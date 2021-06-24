@@ -2,11 +2,26 @@
 
     <div class="navbar">
 
-      <i class="el-icon-menu" id="switch" ></i>
+      <i class="el-icon-menu" id="switch"></i>
       
       <p>{{routeName}}</p>
 
-      <div class="navbar-item-blank-center"><h2 id="main_title">石头文档</h2></div>
+      <el-popover style="margin-left:1%">
+        <pre class="instruction">
+          使用说明
+1.本产品主要作用为项目文档管理，用户可自行创建项目
+  、邀请合作者并编辑文档
+2.本产品可用于进行API测试并返回结果，但是测试的API
+  需保证使用http协议
+3.在进行项目编辑和文档编辑时，请确保自己拥有修改权
+  限(owner、collaborator)
+        </pre>
+      <i class="el-icon-warning-outline" slot="reference"></i>
+      </el-popover>
+
+      <div class="navbar-item-blank-center">
+          <h2 id="main_title">石头文档</h2>
+      </div>
 
       <el-dropdown>
         <span class="dropdown-link">
@@ -34,7 +49,7 @@ export default {
   },
   data () {
     return {
-
+      instructions:"使用说明\\n这是使用说明"
     }
   },
   methods:{

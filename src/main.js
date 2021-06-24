@@ -5,6 +5,7 @@ import App from './App.vue';
 import router from './router'
 import store from './store'
 import axios from 'axios'
+import VueResource from 'vue-resource'
 import mavonEditor from 'mavon-editor'
 import VueQuillEditor from 'vue-quill-editor'
 import 'quill/dist/quill.core.css'
@@ -16,10 +17,11 @@ import './assets/css/global.css'
 
 
 Vue.prototype.$axios = axios
-//axios.defaults.baseURL="/api"
+axios.defaults.baseURL="/api"
 Vue.use(ElementUI);
 Vue.use(mavonEditor);
 Vue.use(VueQuillEditor);
+Vue.use(VueResource)
 Vue.config.productionTip = false
 
 router.beforeEach((to, from, next) => {

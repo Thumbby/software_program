@@ -92,6 +92,9 @@ export default {
               window.alert("Register succeed, go to login and start stone.io")
                 location = "/#/login";    
             }
+            else{
+              window.alert("Something wrong happened")
+            }
           })
         }
       });

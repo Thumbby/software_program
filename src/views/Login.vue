@@ -78,7 +78,13 @@ export default {
               localStorage.setItem('token',res.data.data.token)
               location = "/#/workBench";
             }
+            else{
+              window.alert("Login failed")
+            }
           })
+          .catch((err)=>{
+              console.log(err.response)
+            })
         }
       });
     },

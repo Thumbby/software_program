@@ -20,8 +20,8 @@
           >
           </quill-editor>
         </el-main>
-        
       </el-container>
+      <span>{{content_length}}/60000字</span>
     </el-card>
   </div>
 </template>
@@ -54,6 +54,7 @@ export default {
     var token = localStorage.getItem("token");
     return {
       content: "",
+      content_length:0,
       etherId: "",
       name: "",
       token: token,
@@ -63,13 +64,18 @@ export default {
     };
   },
   methods: {
-    onEditorChange() {
+    onEditorChange(event) {
       //编辑器文本发生变化
       //this.content可以实时获取到当前编辑器内的文本内容
-      console.log(this.content);
+      event.quill.deleteText(60000,4)
+      if(this.content==''){
+        this.content_length=0;
+      }
+      else{
+        this.content_length=event.quill.getLength()-1;
+      }
     },
     getDocContent() {
-      console.log(this.name)
       axios
         .get("/v1/document", {
           headers: { Authorization: "Bearer " + this.token },
@@ -82,6 +88,7 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.content = res.data.data.content;
+            this.content_length = res.data.data.content.length;
             this.title=res.data.data.title;
           }
         })

@@ -53,7 +53,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="取消收藏(出现了bug)"
+            content="取消收藏"
             placement="top"
             v-if="projectInfo.star"
           >
@@ -62,7 +62,7 @@
           <el-tooltip
             class="item"
             effect="dark"
-            content="收藏(出现了bug)"
+            content="收藏"
             placement="top"
             v-if="!projectInfo.star"
           >
